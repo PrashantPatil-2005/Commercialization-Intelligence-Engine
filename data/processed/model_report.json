@@ -3,13 +3,16 @@
   "baseline_model": {
     "type": "weighted_linear_score",
     "weights": {
-      "demand_intensity": 0.2,
-      "engagement_depth_norm": 0.15,
-      "repeatability": 0.15,
-      "segment_similarity": 0.1,
-      "revenue_potential": 0.2,
-      "strategic_fit": 0.1,
-      "feasibility_ease": 0.1
+      "demand_intensity": 0.18,
+      "engagement_depth_norm": 0.13,
+      "repeatability": 0.13,
+      "segment_similarity": 0.09,
+      "revenue_potential": 0.18,
+      "strategic_fit": 0.09,
+      "feasibility_ease": 0.09,
+      "positive_comment_ratio": 0.05,
+      "capability_request_rate": 0.03,
+      "objection_ease": 0.03
     },
     "score_range": [
       1,
@@ -37,51 +40,61 @@
       "Reusable Asset": 2
     }
   },
+  "cross_validation": {
+    "method": "3-fold stratified",
+    "accuracy_mean": 0.4167,
+    "accuracy_std": 0.1179,
+    "fold_scores": [
+      0.25,
+      0.5,
+      0.5
+    ]
+  },
   "top_features": [
     {
-      "feature": "avg_pilot_interest",
-      "importance": 0.1881337901186244
-    },
-    {
       "feature": "demand_intensity",
-      "importance": 0.16676244726188386
+      "importance": 0.12207975279410144
     },
     {
-      "feature": "strategic_fit",
-      "importance": 0.11660454793568167
+      "feature": "avg_pilot_interest",
+      "importance": 0.11882663443707693
     },
     {
-      "feature": "follow_up_rate",
-      "importance": 0.11082511314603069
+      "feature": "avg_objection_count_text",
+      "importance": 0.10814109552962772
     },
     {
-      "feature": "revenue_potential",
-      "importance": 0.10206532431408727
+      "feature": "repeatability",
+      "importance": 0.0938898516360676
+    },
+    {
+      "feature": "engagement_depth_norm",
+      "importance": 0.08659692469915384
     }
   ],
   "top_3_concepts": [
     {
       "portfolio_rank": 1,
       "concept_name": "Auto-Compliance for Healthcare",
-      "readiness_score": 67.1,
+      "readiness_score": 65.7,
       "recommended_outcome": "Reusable Asset"
     },
     {
       "portfolio_rank": 2,
       "concept_name": "Smart Forecast Copilot",
-      "readiness_score": 65.8,
+      "readiness_score": 63.9,
       "recommended_outcome": "Customer Pilot"
     },
     {
       "portfolio_rank": 3,
       "concept_name": "Predictive Contract Assistant",
-      "readiness_score": 61.3,
+      "readiness_score": 61.5,
       "recommended_outcome": "Reusable Asset"
     }
   ],
   "archive_candidates": [
     "Auto-Document for Energy",
-    "Predictive Forecast Assistant",
-    "Smart Workflow Copilot"
+    "Smart Workflow Copilot",
+    "Predictive Forecast Assistant"
   ]
 }

@@ -28,6 +28,9 @@ FEATURE_LABELS: dict[str, str] = {
     "confidence": "evidence confidence",
     "follow_up_rate": "customer follow-up rate",
     "avg_pilot_interest": "pilot interest",
+    "avg_objection_count_text": "customer objection volume",
+    "capability_request_rate": "capability request rate",
+    "positive_comment_ratio": "positive comment ratio",
 }
 
 # Features where higher raw value is generally positive for commercialization
@@ -43,17 +46,24 @@ POSITIVE_FEATURES = {
     "avg_pilot_interest",
 }
 
-RISK_FEATURES = {"feasibility_risk"}
+RISK_FEATURES = {"feasibility_risk", "avg_objection_count_text"}
 
 
 def _display_score(feature: str, value: float) -> float:
-    """Map feature value to a 0–10 readability scale."""
+    """Map feature value to a 0-10 readability scale."""
+    if feature == "avg_objection_count_text":
+        return round(min(float(value), 5.0) * 2, 1)
     return round(float(value) * 10, 1)
 
 
 def _strength_label(feature: str, value: float) -> str:
-    score = _display_score(feature, value) if feature != "feasibility_risk" else _display_score(feature, value)
     if feature in RISK_FEATURES:
+        if feature == "avg_objection_count_text":
+            if value >= 3.0:
+                return "high"
+            if value >= 1.5:
+                return "moderate"
+            return "low"
         if value >= 0.55:
             return "high"
         if value >= 0.35:
@@ -96,6 +106,10 @@ def _format_contribution(feature: str, row: pd.Series, shap_val: float) -> str:
     score = _display_score(feature, value)
 
     if feature in RISK_FEATURES:
+        if feature == "avg_objection_count_text":
+            if shap_val > 0:
+                return f"{strength} customer objection volume (score: {score})"
+            return f"low customer objection volume (score: {score})"
         if shap_val > 0:
             return f"elevated {label} (score: {score})"
         return f"manageable {label} (score: {score})"
@@ -153,24 +167,84 @@ def generate_executive_summary(recommendations: pd.DataFrame, top_n: int = 3) ->
     """Portfolio-level summary for stakeholders."""
     top = recommendations.nsmallest(top_n, "portfolio_rank")
     archive = recommendations[recommendations["recommended_outcome"] == "Archive"]
+    pilots = recommendations[recommendations["recommended_outcome"] == "Customer Pilot"]
+    incubate = recommendations[recommendations["recommended_outcome"] == "Incubate"]
+    assets = recommendations[recommendations["recommended_outcome"] == "Reusable Asset"]
+    mvps = recommendations[recommendations["recommended_outcome"] == "MVP Build"]
+
+    outcome_counts = recommendations["recommended_outcome"].value_counts()
+    industry_counts = recommendations["industry"].value_counts()
 
     lines = [
         "Executive Summary",
-        f"The portfolio analysis ranks {len(recommendations)} concepts by commercialization readiness.",
+        f"The portfolio analysis ranks {len(recommendations)} concepts across {len(industry_counts)} industries.",
         "",
-        "Move forward:",
+        "--- Portfolio Distribution ---",
     ]
+    for outcome, count in outcome_counts.items():
+        lines.append(f"  {outcome}: {count} concept(s)")
+
+    lines.append("")
+    lines.append("--- Top Recommendations (Move Forward) ---")
     for _, row in top.iterrows():
         lines.append(
-            f"  • {row['concept_name']} — {row['recommended_outcome']} "
+            f"  #{int(row['portfolio_rank'])} {row['concept_name']} "
+            f"— {row['recommended_outcome']} "
             f"(readiness {row['readiness_score']}/100, confidence {row['confidence_score']:.0%})"
         )
+        if row.get("key_evidence"):
+            lines.append(f"     Evidence: {row['key_evidence']}")
+
+    if not pilots.empty and len(pilots) > 0:
+        lines.append("")
+        lines.append("--- Customer Pilots (Ready for Live Testing) ---")
+        for _, row in pilots.iterrows():
+            lines.append(
+                f"  • {row['concept_name']} ({row['industry']}) — "
+                f"readiness {row['readiness_score']}/100"
+            )
+
+    if not assets.empty and len(assets) > 0:
+        lines.append("")
+        lines.append("--- Reusable Assets (Cross-Segment Potential) ---")
+        for _, row in assets.iterrows():
+            lines.append(
+                f"  • {row['concept_name']} ({row['industry']}) — "
+                f"readiness {row['readiness_score']}/100"
+            )
+
+    if not incubate.empty and len(incubate) > 0:
+        lines.append("")
+        lines.append("--- Incubate (Needs More Evidence) ---")
+        for _, row in incubate.iterrows():
+            lines.append(
+                f"  • {row['concept_name']} ({row['industry']}) — "
+                f"readiness {row['readiness_score']}/100"
+            )
+        lines.append("  Action: Schedule additional demos, sharpen positioning, or run focused experiments.")
 
     if not archive.empty:
         lines.append("")
-        lines.append("Deprioritize / archive:")
+        lines.append("--- Archive (Weak Signal / Poor Fit) ---")
         for _, row in archive.iterrows():
-            lines.append(f"  • {row['concept_name']} — weak demand and limited engagement")
+            lines.append(
+                f"  • {row['concept_name']} ({row['industry']}) — "
+                f"readiness {row['readiness_score']}/100"
+            )
+        lines.append("  Action: De-prioritize and free resources for higher-signal concepts.")
+
+    lines.append("")
+    lines.append("--- Recommended Next Steps ---")
+    if not mvps.empty:
+        lines.append(f"  MVP Build ({len(mvps)}): Allocate design sprint budget, build focused prototype for validation.")
+    if not pilots.empty:
+        lines.append(f"  Customer Pilot ({len(pilots)}): Identify 1-2 pilot customers, define success metrics, begin contracting.")
+    if not assets.empty:
+        lines.append(f"  Reusable Asset ({len(assets)}): Evaluate platform packaging, cross-sell potential across industries.")
+    if not incubate.empty:
+        lines.append(f"  Incubate ({len(incubate)}): Schedule 2+ additional demos in next quarter, test sharper positioning.")
+    if not archive.empty:
+        lines.append(f"  Archive ({len(archive)}): Document learnings, archive concepts, redeploy team to top-ranked concepts.")
 
     return "\n".join(lines)
 

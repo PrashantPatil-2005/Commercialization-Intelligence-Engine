@@ -244,6 +244,64 @@ def clean_text_feedback(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+# ---------------------------------------------------------------------------
+# Text feature extraction
+# ---------------------------------------------------------------------------
+
+_POSITIVE_KEYWORDS = {
+    "directly addresses", "intuitive", "pilot", "impressed", "alignment",
+    "measurable", "strong", "saves", "accurate", "promising",
+}
+_NEGATIVE_KEYWORDS = {
+    "disappointing", "unrealistic", "unclear", "competing", "do not have budget",
+    "weak", "poor", "lack", "concerns", "burden",
+}
+
+
+def _classify_comment(text: str) -> str:
+    lower = text.lower()
+    pos = sum(1 for kw in _POSITIVE_KEYWORDS if kw in lower)
+    neg = sum(1 for kw in _NEGATIVE_KEYWORDS if kw in lower)
+    if pos > neg:
+        return "positive"
+    if neg > pos:
+        return "negative"
+    return "neutral"
+
+
+def extract_text_features(text_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Extract structured features from qualitative text feedback.
+
+    New features per interaction:
+      - objection_count_text: number of distinct objection themes
+      - n_capability_requests: number of requested capabilities
+      - comment_sentiment: positive / neutral / negative
+    """
+    out = text_df.copy()
+
+    out["objection_count_text"] = out["objection_themes"].apply(
+        lambda s: len([t for t in s.split(";") if t.strip()]) if s else 0
+    )
+    out["n_capability_requests"] = out["requested_capabilities"].apply(
+        lambda s: len([t for t in s.split(";") if t.strip()]) if s else 0
+    )
+    out["comment_sentiment"] = out["customer_comments"].apply(
+        lambda s: _classify_comment(s) if s else "neutral"
+    )
+    return out
+
+
+def aggregate_text_features(text_features: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate text features to concept-level (one row per concept)."""
+    agg = text_features.groupby("concept_id").agg(
+        avg_objection_count_text=("objection_count_text", "mean"),
+        capability_request_rate=("n_capability_requests", lambda s: float((s > 0).mean())),
+        positive_comment_ratio=("comment_sentiment", lambda s: float((s == "positive").mean())),
+    ).round(4)
+    return agg.reset_index()
+
+
 def clean_product_concepts(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     out["delivery_complexity"] = out["delivery_complexity"].clip(1, 5).astype(int)
@@ -464,8 +522,17 @@ def run_pipeline(raw_dir: Path, output_dir: Path) -> dict:
     commercial = clean_commercial_signals(dfs["commercial_signals"])
     text = clean_text_feedback(dfs["text_feedback"])
 
+    text_feats = extract_text_features(text)
+    text_agg = aggregate_text_features(text_feats)
+
     interactions = build_interaction_features(demos, usage, commercial, concepts)
     concept_features = build_concept_features(interactions, concepts, demo_missing_rate)
+    concept_features = concept_features.merge(text_agg, on="concept_id", how="left")
+    text_agg_cols = ["avg_objection_count_text", "capability_request_rate", "positive_comment_ratio"]
+    for col in text_agg_cols:
+        if col not in concept_features.columns:
+            concept_features[col] = 0.0
+        concept_features[col] = concept_features[col].fillna(0.0)
 
     output_dir.mkdir(parents=True, exist_ok=True)
     concepts.to_csv(output_dir / "product_concepts_clean.csv", index=False)
@@ -499,6 +566,9 @@ def run_pipeline(raw_dir: Path, output_dir: Path) -> dict:
         "avg_willingness_to_pay",
         "avg_pilot_interest",
         "segments_reached",
+        "avg_objection_count_text",
+        "capability_request_rate",
+        "positive_comment_ratio",
     ]
     concept_features[feature_cols].to_csv(output_dir / "concept_features.csv", index=False)
     concept_features.to_csv(output_dir / "concept_features_full.csv", index=False)
@@ -523,6 +593,9 @@ def run_pipeline(raw_dir: Path, output_dir: Path) -> dict:
                 "revenue_potential",
                 "strategic_fit",
                 "confidence",
+                "avg_objection_count_text",
+                "capability_request_rate",
+                "positive_comment_ratio",
             ]
         },
     }

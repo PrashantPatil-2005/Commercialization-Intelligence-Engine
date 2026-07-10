@@ -43,6 +43,21 @@
       "mean": 0.8341,
       "min": 0.5528,
       "max": 0.9896
+    },
+    "avg_objection_count_text": {
+      "mean": 1.7426,
+      "min": 1.3333,
+      "max": 2.3636
+    },
+    "capability_request_rate": {
+      "mean": 0.8875,
+      "min": 0.7368,
+      "max": 1.0
+    },
+    "positive_comment_ratio": {
+      "mean": 0.059,
+      "min": 0.0,
+      "max": 0.1481
     }
   }
 }

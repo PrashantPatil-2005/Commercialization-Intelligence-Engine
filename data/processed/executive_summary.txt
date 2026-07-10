@@ -1,12 +1,44 @@
 Executive Summary
-The portfolio analysis ranks 12 concepts by commercialization readiness.
+The portfolio analysis ranks 12 concepts across 7 industries.
 
-Move forward:
-  • Auto-Compliance for Healthcare — Reusable Asset (readiness 67.1/100, confidence 90%)
-  • Smart Forecast Copilot — Customer Pilot (readiness 65.8/100, confidence 88%)
-  • Predictive Contract Assistant — Reusable Asset (readiness 61.3/100, confidence 87%)
+--- Portfolio Distribution ---
+  Incubate: 4 concept(s)
+  Customer Pilot: 3 concept(s)
+  Archive: 3 concept(s)
+  Reusable Asset: 2 concept(s)
 
-Deprioritize / archive:
-  • Auto-Document for Energy — weak demand and limited engagement
-  • Predictive Forecast Assistant — weak demand and limited engagement
-  • Smart Workflow Copilot — weak demand and limited engagement
+--- Top Recommendations (Move Forward) ---
+  #1 Auto-Compliance for Healthcare — Reusable Asset (readiness 65.7/100, confidence 89%)
+     Evidence: strong demand intensity (0.58); deep sandbox engagement (norm=0.76); repeatable usage patterns (0.35); demand consistent across segments; solid revenue potential (0.51)
+  #2 Smart Forecast Copilot — Customer Pilot (readiness 63.9/100, confidence 88%)
+     Evidence: strong demand intensity (0.49); deep sandbox engagement (norm=1.00); repeatable usage patterns (0.37); solid revenue potential (0.45); favorable feasibility profile (0.25)
+  #3 Predictive Contract Assistant — Reusable Asset (readiness 61.5/100, confidence 87%)
+     Evidence: strong demand intensity (0.51); deep sandbox engagement (norm=0.76); repeatable usage patterns (0.36); demand consistent across segments; solid revenue potential (0.43)
+
+--- Customer Pilots (Ready for Live Testing) ---
+  • Smart Forecast Copilot (Energy & Utilities) — readiness 63.9/100
+  • Auto-Contract for Public (Public Sector) — readiness 58.2/100
+  • Smart Contract Copilot (Public Sector) — readiness 57.6/100
+
+--- Reusable Assets (Cross-Segment Potential) ---
+  • Auto-Compliance for Healthcare (Healthcare) — readiness 65.7/100
+  • Predictive Contract Assistant (Retail) — readiness 61.5/100
+
+--- Incubate (Needs More Evidence) ---
+  • Predictive Forecast Assistant (Telecommunications) — readiness 58.7/100
+  • Auto-Forecast for Energy (Energy & Utilities) — readiness 57.8/100
+  • Predictive Forecast Assistant (Financial Services) — readiness 56.5/100
+  • Automated Invoice Assistant (Manufacturing) — readiness 55.0/100
+  Action: Schedule additional demos, sharpen positioning, or run focused experiments.
+
+--- Archive (Weak Signal / Poor Fit) ---
+  • Auto-Document for Energy (Energy & Utilities) — readiness 49.7/100
+  • Smart Workflow Copilot (Financial Services) — readiness 47.3/100
+  • Predictive Forecast Assistant (Financial Services) — readiness 46.4/100
+  Action: De-prioritize and free resources for higher-signal concepts.
+
+--- Recommended Next Steps ---
+  Customer Pilot (3): Identify 1-2 pilot customers, define success metrics, begin contracting.
+  Reusable Asset (2): Evaluate platform packaging, cross-sell potential across industries.
+  Incubate (4): Schedule 2+ additional demos in next quarter, test sharper positioning.
+  Archive (3): Document learnings, archive concepts, redeploy team to top-ranked concepts.

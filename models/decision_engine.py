@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.preprocessing import StandardScaler
 
 # ---------------------------------------------------------------------------
@@ -44,17 +45,23 @@ FEATURE_COLUMNS = [
     "confidence",
     "follow_up_rate",
     "avg_pilot_interest",
+    "avg_objection_count_text",
+    "capability_request_rate",
+    "positive_comment_ratio",
 ]
 
 # Baseline weights (positive signals + inverted risk)
 BASELINE_WEIGHTS = {
-    "demand_intensity": 0.20,
-    "engagement_depth_norm": 0.15,
-    "repeatability": 0.15,
-    "segment_similarity": 0.10,
-    "revenue_potential": 0.20,
-    "strategic_fit": 0.10,
-    "feasibility_ease": 0.10,  # derived as 1 - feasibility_risk
+    "demand_intensity": 0.18,
+    "engagement_depth_norm": 0.13,
+    "repeatability": 0.13,
+    "segment_similarity": 0.09,
+    "revenue_potential": 0.18,
+    "strategic_fit": 0.09,
+    "feasibility_ease": 0.09,  # derived as 1 - feasibility_risk
+    "positive_comment_ratio": 0.05,
+    "capability_request_rate": 0.03,
+    "objection_ease": 0.03,  # derived as 1 - normalized objection count
 }
 
 N_CLUSTERS = 4
@@ -71,6 +78,7 @@ def compute_baseline_readiness(df: pd.DataFrame) -> pd.Series:
     Higher = stronger commercialization signal.
     """
     ease = 1.0 - df["feasibility_risk"]
+    obj_ease = 1.0 - (df["avg_objection_count_text"] / 5.0).clip(0, 1)
     raw = (
         df["demand_intensity"] * BASELINE_WEIGHTS["demand_intensity"]
         + df["engagement_depth_norm"] * BASELINE_WEIGHTS["engagement_depth_norm"]
@@ -79,6 +87,9 @@ def compute_baseline_readiness(df: pd.DataFrame) -> pd.Series:
         + df["revenue_potential"] * BASELINE_WEIGHTS["revenue_potential"]
         + df["strategic_fit"] * BASELINE_WEIGHTS["strategic_fit"]
         + ease * BASELINE_WEIGHTS["feasibility_ease"]
+        + df["positive_comment_ratio"] * BASELINE_WEIGHTS["positive_comment_ratio"]
+        + df["capability_request_rate"] * BASELINE_WEIGHTS["capability_request_rate"]
+        + obj_ease * BASELINE_WEIGHTS["objection_ease"]
     )
     return (raw * 100).clip(1, 100).round(1)
 
@@ -230,6 +241,14 @@ def build_evidence(row: pd.Series) -> str:
     if row["follow_up_rate"] >= 0.40:
         points.append(f"high follow-up rate ({row['follow_up_rate']:.0%})")
 
+    if "positive_comment_ratio" in row.index and row["positive_comment_ratio"] >= 0.50:
+        points.append(f"positive customer sentiment ({row['positive_comment_ratio']:.0%})")
+    elif "positive_comment_ratio" in row.index and row["positive_comment_ratio"] < 0.25:
+        points.append(f"negative customer sentiment ({row['positive_comment_ratio']:.0%})")
+
+    if "capability_request_rate" in row.index and row["capability_request_rate"] >= 0.60:
+        points.append(f"high capability request rate ({row['capability_request_rate']:.0%})")
+
     return "; ".join(points[:5]) if points else "mixed signals across dimensions"
 
 
@@ -269,6 +288,14 @@ def run_decision_engine(features_path: Path, output_dir: Path) -> tuple[dict, di
     # --- Layer 3: Random Forest ---
     df["synthetic_outcome"] = df.apply(assign_synthetic_outcome, axis=1)
     clf = train_random_forest(X, df["synthetic_outcome"])
+
+    # Cross-validation (3-fold; small dataset, for robustness check only)
+    n_classes_in_data = df["synthetic_outcome"].nunique()
+    n_splits = min(3, n_classes_in_data)
+    cv = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=RANDOM_SEED)
+    cv_scores = cross_val_score(clf, X, df["synthetic_outcome"], cv=cv, scoring="accuracy")
+    cv_accuracy_mean = float(cv_scores.mean())
+    cv_accuracy_std = float(cv_scores.std())
 
     df["recommended_outcome"] = clf.predict(X)
     proba = clf.predict_proba(X)
@@ -313,6 +340,9 @@ def run_decision_engine(features_path: Path, output_dir: Path) -> tuple[dict, di
         "segment_similarity",
         "revenue_potential",
         "strategic_fit",
+        "positive_comment_ratio",
+        "capability_request_rate",
+        "avg_objection_count_text",
         "key_evidence",
     ]
     ranked = df.sort_values("portfolio_rank")[result_cols]
@@ -351,6 +381,12 @@ def run_decision_engine(features_path: Path, output_dir: Path) -> tuple[dict, di
             "n_estimators": 200,
             "training_labels": "synthetic_rule_based",
             "outcome_distribution": outcome_dist,
+        },
+        "cross_validation": {
+            "method": f"{n_splits}-fold stratified",
+            "accuracy_mean": round(cv_accuracy_mean, 4),
+            "accuracy_std": round(cv_accuracy_std, 4),
+            "fold_scores": [round(float(s), 4) for s in cv_scores],
         },
         "top_features": importance.head(5).to_dict(orient="records"),
         "top_3_concepts": ranked.head(3)[

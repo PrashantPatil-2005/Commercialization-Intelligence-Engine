@@ -2,6 +2,15 @@
 
 An AI/ML-powered decision engine that transforms raw customer signals—demo feedback, sandbox usage, commercial intent, and text comments—into actionable commercial recommendations for a portfolio of product concepts.
 
+## Quick Start
+
+```bash
+pip install -r requirements.txt
+streamlit run app/streamlit_app.py
+```
+
+> Pre-computed outputs are available in `data/processed/`, so the dashboard works without re-running the full pipeline.
+
 ## Architecture
 
 ```
@@ -9,7 +18,7 @@ Customer Signals ──> Feature Engineering ──> ML Decision Engine ──> 
    (Phase 1)              (Phase 2)              (Phase 3)             (Phase 4)          (Phase 5)
 ```
 
-The pipeline evaluates 12 product concepts and recommends one of five outcomes: **MVP Build**, **Customer Pilot**, **Reusable Asset**, **Incubate**, or **Archive**.
+The pipeline evaluates 12 product concepts across 7 industries and recommends one of five outcomes: **MVP Build**, **Customer Pilot**, **Reusable Asset**, **Incubate**, or **Archive**.
 
 ## Key Features
 
@@ -115,7 +124,7 @@ Interactive Streamlit dashboard with cached pipeline execution, 4 visual analyti
 | `customers.csv` | 80 | Customer profiles across 5 segments |
 | `customer_demo_signals.csv` | 257 | Demo session records (feedback score, follow-up, objections) |
 | `sandbox_usage.csv` | 76 | Trial usage metrics (sessions, clicks, time spent) |
-| `commercial_signals.csv` | 230 | Commercial intent (pilot interest, urgency, budget, WTP) |
+| `commercial_signals.csv` | 230 | Commercial intent (pilot interest, urgency, budget, willingness to pay) |
 | `text_feedback.csv` | 230 | Qualitative feedback (comments, pain points, capabilities) |
 
 ### Processed Data (`data/processed/`)
@@ -143,6 +152,12 @@ Interactive Streamlit dashboard with cached pipeline execution, 4 visual analyti
 | SHAP Explainer | Tree-based Shapley values | Per-prediction feature attribution |
 
 **Top features by importance:** avg_pilot_interest (18.8%), demand_intensity (16.7%), strategic_fit (11.7%), follow_up_rate (11.1%), revenue_potential (10.2%)
+
+## Limitations
+
+- All data is synthetic; the Random Forest is trained on rule-based pseudo-labels, not real-world outcomes
+- Cluster assignments and outcome predictions are illustrative of the pipeline, not validated business decisions
+- The hidden `_latent_commercial_potential` variable is used only for data generation and is never exposed to the models
 
 ## Author
 
