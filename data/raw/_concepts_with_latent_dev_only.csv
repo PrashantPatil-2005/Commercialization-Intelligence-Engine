@@ -1,0 +1,13 @@
+concept_id,concept_name,industry,problem_area,target_user,delivery_complexity,strategic_fit,_latent_commercial_potential
+CONCEPT-001,Smart Workflow Copilot,Financial Services,Supply Chain Optimization,Operations Manager,3,0.447,0.1693
+CONCEPT-002,Auto-Forecast for Energy,Energy & Utilities,Revenue Forecasting,Operations Manager,2,0.621,0.6372
+CONCEPT-003,Smart Contract Copilot,Public Sector,Customer Service Automation,CIO / CTO,2,0.708,0.6321
+CONCEPT-004,Predictive Contract Assistant,Retail,Workforce Productivity,CIO / CTO,4,0.649,0.6747
+CONCEPT-005,Automated Invoice Assistant,Manufacturing,Predictive Maintenance,Customer Success Director,3,0.622,0.518
+CONCEPT-006,Predictive Forecast Assistant,Telecommunications,Supply Chain Optimization,Business Analyst,3,0.631,0.5667
+CONCEPT-007,Predictive Forecast Assistant,Financial Services,Document Intelligence,Business Analyst,3,0.649,0.5768
+CONCEPT-008,Auto-Document for Energy,Energy & Utilities,Compliance Monitoring,Data Science Lead,2,0.496,0.2925
+CONCEPT-009,Auto-Contract for Public,Public Sector,Customer Service Automation,Operations Manager,3,0.586,0.5919
+CONCEPT-010,Predictive Forecast Assistant,Financial Services,Predictive Maintenance,CIO / CTO,4,0.377,0.3273
+CONCEPT-011,Auto-Compliance for Healthcare,Healthcare,Fraud Detection,Data Science Lead,3,0.818,0.7927
+CONCEPT-012,Smart Forecast Copilot,Energy & Utilities,Workforce Productivity,Data Science Lead,2,0.548,0.6313

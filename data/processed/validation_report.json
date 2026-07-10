@@ -1,0 +1,48 @@
+{
+  "validation_issues": [],
+  "validation_passed": true,
+  "concept_count": 12,
+  "interaction_count": 257,
+  "feature_summary": {
+    "demand_intensity": {
+      "mean": 0.379,
+      "min": 0.1398,
+      "max": 0.5764
+    },
+    "engagement_depth": {
+      "mean": 34.4462,
+      "min": 0.0,
+      "max": 81.2448
+    },
+    "feasibility_risk": {
+      "mean": 0.3906,
+      "min": 0.2346,
+      "max": 0.609
+    },
+    "repeatability": {
+      "mean": 0.1943,
+      "min": 0.0,
+      "max": 0.3678
+    },
+    "segment_similarity": {
+      "mean": 0.9108,
+      "min": 0.807,
+      "max": 0.9922
+    },
+    "revenue_potential": {
+      "mean": 0.364,
+      "min": 0.1832,
+      "max": 0.5132
+    },
+    "strategic_fit": {
+      "mean": 0.596,
+      "min": 0.377,
+      "max": 0.818
+    },
+    "confidence": {
+      "mean": 0.8341,
+      "min": 0.5528,
+      "max": 0.9896
+    }
+  }
+}

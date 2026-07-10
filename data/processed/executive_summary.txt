@@ -1,0 +1,12 @@
+Executive Summary
+The portfolio analysis ranks 12 concepts by commercialization readiness.
+
+Move forward:
+  • Auto-Compliance for Healthcare — Reusable Asset (readiness 67.1/100, confidence 90%)
+  • Smart Forecast Copilot — Customer Pilot (readiness 65.8/100, confidence 88%)
+  • Predictive Contract Assistant — Reusable Asset (readiness 61.3/100, confidence 87%)
+
+Deprioritize / archive:
+  • Auto-Document for Energy — weak demand and limited engagement
+  • Predictive Forecast Assistant — weak demand and limited engagement
+  • Smart Workflow Copilot — weak demand and limited engagement

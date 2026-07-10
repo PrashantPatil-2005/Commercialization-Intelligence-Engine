@@ -1,0 +1,81 @@
+customer_id,customer_name,segment
+CUST-0001,"Rodriguez, Figueroa and Sanchez",Mid-Market
+CUST-0002,Doyle Ltd,SMB
+CUST-0003,"Mcclain, Miller and Henderson",Enterprise
+CUST-0004,Davis and Sons,Public Sector
+CUST-0005,"Guzman, Hoffman and Baldwin",Public Sector
+CUST-0006,"Gardner, Robinson and Lawrence",SMB
+CUST-0007,Blake and Sons,Mid-Market
+CUST-0008,"Henderson, Ramirez and Lewis",SMB
+CUST-0009,Garcia-James,SMB
+CUST-0010,Abbott-Munoz,SMB
+CUST-0011,Blair PLC,Enterprise
+CUST-0012,Dudley Group,Mid-Market
+CUST-0013,Arnold Ltd,Enterprise
+CUST-0014,"Mcclure, Ward and Lee",Mid-Market
+CUST-0015,Williams and Sons,Mid-Market
+CUST-0016,Galloway-Wyatt,Enterprise
+CUST-0017,James Group,Enterprise
+CUST-0018,"Flowers, Martin and Kelly",SMB
+CUST-0019,"Adams, Zuniga and Wong",Enterprise
+CUST-0020,"Reid, Ferguson and Sanchez",Startup
+CUST-0021,Gray-Mayo,SMB
+CUST-0022,"Watts, Robinson and Nguyen",Mid-Market
+CUST-0023,Perez Inc,SMB
+CUST-0024,Morales-Jones,Enterprise
+CUST-0025,"Walter, Edwards and Rios",Startup
+CUST-0026,Wilkerson-Day,Mid-Market
+CUST-0027,Baker and Sons,Public Sector
+CUST-0028,"Hoffman, Baker and Richards",Enterprise
+CUST-0029,"Ross, Robinson and Bright",Mid-Market
+CUST-0030,"Snyder, Campos and Callahan",Mid-Market
+CUST-0031,Burton Ltd,Startup
+CUST-0032,Carlson-Cruz,SMB
+CUST-0033,"Ferrell, Rice and Maddox",Mid-Market
+CUST-0034,Frazier Inc,Enterprise
+CUST-0035,"Dyer, Potter and Mack",Mid-Market
+CUST-0036,Rodriguez-Graham,Mid-Market
+CUST-0037,Smith-Bowen,Mid-Market
+CUST-0038,"Baker, Mason and White",Enterprise
+CUST-0039,Harrell LLC,Public Sector
+CUST-0040,"Romero, Gonzalez and Brooks",Public Sector
+CUST-0041,Ryan PLC,Enterprise
+CUST-0042,George Group,SMB
+CUST-0043,Rodriguez LLC,Enterprise
+CUST-0044,Allen-Allen,SMB
+CUST-0045,"Arroyo, Miller and Tucker",Enterprise
+CUST-0046,Spence PLC,SMB
+CUST-0047,Anderson Group,SMB
+CUST-0048,"Martin, Rose and Obrien",Public Sector
+CUST-0049,Hickman Ltd,Enterprise
+CUST-0050,"Harris, Collins and Carney",Startup
+CUST-0051,"Brooks, Lam and Hayes",Enterprise
+CUST-0052,Walker LLC,Enterprise
+CUST-0053,Chapman and Sons,SMB
+CUST-0054,"Robinson, Jones and Welch",Mid-Market
+CUST-0055,Jones Inc,Public Sector
+CUST-0056,Jones-Young,Public Sector
+CUST-0057,"Washington, Ryan and Cummings",Mid-Market
+CUST-0058,"Johnston, Sanchez and Kennedy",Startup
+CUST-0059,Lee-Davis,Enterprise
+CUST-0060,Gomez-Jenkins,Mid-Market
+CUST-0061,"Brown, Valdez and Lucas",Enterprise
+CUST-0062,Powell LLC,Startup
+CUST-0063,Wright and Sons,Enterprise
+CUST-0064,"West, Henderson and Ramirez",Enterprise
+CUST-0065,Baxter Inc,Mid-Market
+CUST-0066,Morton-Chase,Startup
+CUST-0067,Williams PLC,Public Sector
+CUST-0068,Novak and Sons,SMB
+CUST-0069,Russell Group,Public Sector
+CUST-0070,Hancock Inc,Public Sector
+CUST-0071,Gray Group,Mid-Market
+CUST-0072,House-Glover,Mid-Market
+CUST-0073,Henderson-Bernard,Public Sector
+CUST-0074,"Stanley, Tucker and Lee",SMB
+CUST-0075,Novak PLC,Mid-Market
+CUST-0076,"Daniels, Adkins and Brown",Enterprise
+CUST-0077,"Woods, Calhoun and Schmidt",SMB
+CUST-0078,Yu Inc,Enterprise
+CUST-0079,Jones Inc,Startup
+CUST-0080,"Hensley, Powell and David",Enterprise
