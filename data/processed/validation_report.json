@@ -2,62 +2,62 @@
   "validation_issues": [],
   "validation_passed": true,
   "concept_count": 12,
-  "interaction_count": 257,
+  "interaction_count": 246,
   "feature_summary": {
     "demand_intensity": {
-      "mean": 0.379,
-      "min": 0.1398,
-      "max": 0.5764
+      "mean": 0.3687,
+      "min": 0.1356,
+      "max": 0.5525
     },
     "engagement_depth": {
-      "mean": 34.4462,
-      "min": 0.0,
-      "max": 81.2448
+      "mean": 30.8479,
+      "min": 1.135,
+      "max": 81.2044
     },
     "feasibility_risk": {
-      "mean": 0.3906,
-      "min": 0.2346,
-      "max": 0.609
+      "mean": 0.3775,
+      "min": 0.2358,
+      "max": 0.5805
     },
     "repeatability": {
-      "mean": 0.1943,
-      "min": 0.0,
-      "max": 0.3678
+      "mean": 0.1907,
+      "min": 0.0164,
+      "max": 0.4311
     },
     "segment_similarity": {
-      "mean": 0.9108,
-      "min": 0.807,
-      "max": 0.9922
+      "mean": 0.9126,
+      "min": 0.7996,
+      "max": 0.9859
     },
     "revenue_potential": {
-      "mean": 0.364,
-      "min": 0.1832,
-      "max": 0.5132
+      "mean": 0.3416,
+      "min": 0.1716,
+      "max": 0.4692
     },
     "strategic_fit": {
-      "mean": 0.596,
-      "min": 0.377,
-      "max": 0.818
+      "mean": 0.6019,
+      "min": 0.447,
+      "max": 0.73
     },
     "confidence": {
-      "mean": 0.8341,
-      "min": 0.5528,
-      "max": 0.9896
+      "mean": 0.7983,
+      "min": 0.6413,
+      "max": 0.9875
     },
     "avg_objection_count_text": {
-      "mean": 1.7426,
-      "min": 1.3333,
-      "max": 2.3636
+      "mean": 1.7972,
+      "min": 1.3,
+      "max": 2.5
     },
     "capability_request_rate": {
-      "mean": 0.8875,
-      "min": 0.7368,
+      "mean": 0.9027,
+      "min": 0.6667,
       "max": 1.0
     },
     "positive_comment_ratio": {
-      "mean": 0.059,
+      "mean": 0.0364,
       "min": 0.0,
-      "max": 0.1481
+      "max": 0.2
     }
   }
 }

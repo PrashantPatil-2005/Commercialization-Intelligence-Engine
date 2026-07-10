@@ -114,9 +114,10 @@ def _format_contribution(feature: str, row: pd.Series, shap_val: float) -> str:
             return f"elevated {label} (score: {score})"
         return f"manageable {label} (score: {score})"
 
+    # For positive features, describe the actual value strength, not just SHAP direction
     if shap_val > 0:
         return f"{strength} {label} (score: {score})"
-    return f"limited {label} (score: {score})"
+    return f"{strength} {label} (score: {score})"
 
 
 def generate_narrative(

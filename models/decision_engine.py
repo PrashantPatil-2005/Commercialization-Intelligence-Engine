@@ -131,7 +131,7 @@ def assign_synthetic_outcome(row: pd.Series) -> str:
         return "Customer Pilot"
 
     # MVP Build — strong focused signal for validation build
-    if demand >= 0.48 and engagement >= 0.45 and revenue >= 0.42 and fit >= 0.55:
+    if demand >= 0.45 and engagement >= 0.35 and revenue >= 0.38 and fit >= 0.50:
         return "MVP Build"
 
     # Incubate — promising but insufficient evidence
@@ -150,18 +150,36 @@ def run_kmeans_clustering(
     kmeans = KMeans(n_clusters=N_CLUSTERS, random_state=RANDOM_SEED, n_init=10)
     labels = kmeans.fit_predict(X_scaled)
 
-    cluster_names: dict[int, str] = {}
-    demand_median = df["demand_intensity"].median()
-    risk_median = df["feasibility_risk"].median()
-
+    # Name clusters by ranking their mean demand and risk relative to each other
+    # This guarantees unique labels even when values are close
+    cluster_stats = []
     for cluster_id in range(N_CLUSTERS):
         mask = labels == cluster_id
         cluster_df = df.loc[mask, cluster_features]
         demand = float(cluster_df["demand_intensity"].mean())
         risk = float(cluster_df["feasibility_risk"].mean())
+        cluster_stats.append((cluster_id, demand, risk))
+
+    # Rank by demand (high/low) and risk (high/low) using quartile splits
+    demands = [s[1] for s in cluster_stats]
+    risks = [s[2] for s in cluster_stats]
+    demand_median = np.median(demands)
+    risk_median = np.median(risks)
+
+    cluster_names: dict[int, str] = {}
+    for cluster_id, demand, risk in cluster_stats:
         demand_level = "High Demand" if demand >= demand_median else "Low Demand"
         effort_level = "Low Effort" if risk < risk_median else "High Effort"
         cluster_names[cluster_id] = f"{demand_level} / {effort_level}"
+
+    # Resolve duplicates by appending cluster index
+    seen = {}
+    for cid in list(cluster_names):
+        name = cluster_names[cid]
+        if name in seen:
+            cluster_names[cid] = f"{name} ({cid})"
+        else:
+            seen[name] = cid
 
     return labels, cluster_names, kmeans
 

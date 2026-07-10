@@ -198,10 +198,11 @@ def _concept_name(rng: np.random.Generator, industry: str) -> str:
 def generate_product_concepts(rng: np.random.Generator) -> pd.DataFrame:
     """One row per concept. latent_commercial_potential is hidden driver."""
     rows = []
+    used_names: set[str] = set()
     for i in range(NUM_CONCEPTS):
         concept_id = f"CONCEPT-{i + 1:03d}"
         industry = rng.choice(INDUSTRIES)
-        latent = float(rng.beta(2, 2))  # spread across portfolio quality
+        latent = float(rng.beta(2, 2))  # Beta(2,2) gives a symmetric spread centered ~0.5
 
         # Strategic fit correlates with latent potential but not perfectly
         strategic_fit = _clip(
@@ -221,10 +222,18 @@ def generate_product_concepts(rng: np.random.Generator) -> pd.DataFrame:
             )
         )
 
+        # Ensure unique concept names across the portfolio
+        name = _concept_name(rng, industry)
+        attempts = 0
+        while name in used_names and attempts < 50:
+            name = _concept_name(rng, industry)
+            attempts += 1
+        used_names.add(name)
+
         rows.append(
             {
                 "concept_id": concept_id,
-                "concept_name": _concept_name(rng, industry),
+                "concept_name": name,
                 "industry": industry,
                 "problem_area": rng.choice(PROBLEM_AREAS),
                 "target_user": rng.choice(TARGET_USERS),
@@ -242,29 +251,42 @@ def generate_customer_demo_signals(
     customers: pd.DataFrame,
     rng: np.random.Generator,
 ) -> pd.DataFrame:
-    """Multiple demo sessions per concept across customer segments."""
+    """Multiple demo sessions per concept across customer segments.
+
+    Signal generation logic (all coefficients are domain-informed):
+      - feedback_score: latent * 4.5 maps Beta(2,2) range [0,1] to ~[0,4.5],
+        plus segment boost and Gaussian noise (sigma=0.55).
+      - decision_maker_present: probability rises with latent potential and feedback.
+      - follow_up_requested: probability rises with latent potential and feedback.
+      - objections_count: Poisson count inversely related to latent potential
+        (better concepts get fewer objections).
+    """
     rows = []
     latent_map = concepts.set_index("concept_id")["_latent_commercial_potential"].to_dict()
 
     for _, concept in concepts.iterrows():
         concept_id = concept["concept_id"]
         latent = latent_map[concept_id]
-        n_demos = int(rng.integers(12, 35))
+        n_demos = int(rng.integers(12, 35))  # 12-35 demo sessions per concept
 
         demo_customers = customers.sample(n=n_demos, replace=True, random_state=int(rng.integers(0, 1_000_000)))
 
         for _, customer in demo_customers.iterrows():
             segment = customer["segment"]
+            # Enterprise/Mid-Market give slightly higher scores; SMBs/Startups lower
             segment_boost = {"Enterprise": 0.08, "Mid-Market": 0.04, "SMB": -0.05, "Public Sector": 0.02, "Startup": -0.02}
             base_feedback = latent * 4.5 + segment_boost.get(segment, 0) + rng.normal(0, 0.55)
             feedback_score = float(np.clip(np.round(base_feedback, 1), 1.0, 5.0))
 
+            # P(decision maker present) rises with concept quality and feedback
             dm_prob = np.clip(0.25 + latent * 0.45 + (feedback_score - 3) * 0.08, 0.05, 0.95)
             decision_maker_present = bool(rng.random() < dm_prob)
 
+            # P(follow-up requested) rises with concept quality and feedback
             follow_up_prob = np.clip(0.15 + latent * 0.5 + (feedback_score - 3) * 0.12, 0.03, 0.92)
             follow_up_requested = bool(rng.random() < follow_up_prob)
 
+            # Objections: fewer for high-quality concepts (Poisson with lower lambda)
             objections = int(
                 np.clip(
                     rng.poisson(lam=max(0.3, 3.5 - latent * 2.5 - (feedback_score - 3) * 0.4)),

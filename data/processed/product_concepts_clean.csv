@@ -5,9 +5,9 @@ CONCEPT-003,Smart Contract Copilot,Public Sector,Customer Service Automation,CIO
 CONCEPT-004,Predictive Contract Assistant,Retail,Workforce Productivity,CIO / CTO,4,0.649
 CONCEPT-005,Automated Invoice Assistant,Manufacturing,Predictive Maintenance,Customer Success Director,3,0.622
 CONCEPT-006,Predictive Forecast Assistant,Telecommunications,Supply Chain Optimization,Business Analyst,3,0.631
-CONCEPT-007,Predictive Forecast Assistant,Financial Services,Document Intelligence,Business Analyst,3,0.649
-CONCEPT-008,Auto-Document for Energy,Energy & Utilities,Compliance Monitoring,Data Science Lead,2,0.496
-CONCEPT-009,Auto-Contract for Public,Public Sector,Customer Service Automation,Operations Manager,3,0.586
-CONCEPT-010,Predictive Forecast Assistant,Financial Services,Predictive Maintenance,CIO / CTO,4,0.377
-CONCEPT-011,Auto-Compliance for Healthcare,Healthcare,Fraud Detection,Data Science Lead,3,0.818
-CONCEPT-012,Smart Forecast Copilot,Energy & Utilities,Workforce Productivity,Data Science Lead,2,0.548
+CONCEPT-007,Predictive Workflow Assistant,Financial Services,Customer Service Automation,Business Analyst,3,0.649
+CONCEPT-008,Smart Insight Copilot,Financial Services,Customer Service Automation,CIO / CTO,2,0.463
+CONCEPT-009,Auto-Document for Telecommunications,Telecommunications,Document Intelligence,Customer Success Director,3,0.499
+CONCEPT-010,Adaptive Invoice Assistant,Energy & Utilities,Customer Service Automation,Customer Success Director,3,0.641
+CONCEPT-011,Auto-Compliance for Telecommunications,Telecommunications,Revenue Forecasting,Data Science Lead,2,0.563
+CONCEPT-012,Compliance Intelligence Platform,Energy & Utilities,Customer Service Automation,Customer Success Director,3,0.73

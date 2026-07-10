@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 
 import matplotlib.pyplot as plt

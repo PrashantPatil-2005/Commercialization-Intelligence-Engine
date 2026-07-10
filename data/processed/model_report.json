@@ -24,9 +24,9 @@
     "n_clusters": 4,
     "cluster_profiles": {
       "0": "Low Demand / High Effort",
-      "1": "High Demand / Low Effort",
-      "2": "High Demand / Low Effort",
-      "3": "Low Demand / High Effort"
+      "1": "High Demand / High Effort",
+      "2": "Low Demand / Low Effort",
+      "3": "High Demand / Low Effort"
     }
   },
   "classifier": {
@@ -34,67 +34,66 @@
     "n_estimators": 200,
     "training_labels": "synthetic_rule_based",
     "outcome_distribution": {
-      "Incubate": 4,
-      "Archive": 3,
-      "Customer Pilot": 3,
-      "Reusable Asset": 2
+      "Incubate": 7,
+      "Archive": 2,
+      "Customer Pilot": 2,
+      "Reusable Asset": 1
     }
   },
   "cross_validation": {
     "method": "3-fold stratified",
-    "accuracy_mean": 0.4167,
-    "accuracy_std": 0.1179,
+    "accuracy_mean": 0.75,
+    "accuracy_std": 0.2041,
     "fold_scores": [
-      0.25,
       0.5,
-      0.5
+      1.0,
+      0.75
     ]
   },
   "top_features": [
     {
+      "feature": "revenue_potential",
+      "importance": 0.13820053191986603
+    },
+    {
       "feature": "demand_intensity",
-      "importance": 0.12207975279410144
-    },
-    {
-      "feature": "avg_pilot_interest",
-      "importance": 0.11882663443707693
-    },
-    {
-      "feature": "avg_objection_count_text",
-      "importance": 0.10814109552962772
-    },
-    {
-      "feature": "repeatability",
-      "importance": 0.0938898516360676
+      "importance": 0.11671445712066557
     },
     {
       "feature": "engagement_depth_norm",
-      "importance": 0.08659692469915384
+      "importance": 0.0923446579852116
+    },
+    {
+      "feature": "segment_similarity",
+      "importance": 0.08818337153296806
+    },
+    {
+      "feature": "feasibility_risk",
+      "importance": 0.08574899285041263
     }
   ],
   "top_3_concepts": [
     {
       "portfolio_rank": 1,
-      "concept_name": "Auto-Compliance for Healthcare",
-      "readiness_score": 65.7,
-      "recommended_outcome": "Reusable Asset"
-    },
-    {
-      "portfolio_rank": 2,
-      "concept_name": "Smart Forecast Copilot",
-      "readiness_score": 63.9,
+      "concept_name": "Compliance Intelligence Platform",
+      "readiness_score": 66.3,
       "recommended_outcome": "Customer Pilot"
     },
     {
+      "portfolio_rank": 2,
+      "concept_name": "Automated Invoice Assistant",
+      "readiness_score": 62.6,
+      "recommended_outcome": "Incubate"
+    },
+    {
       "portfolio_rank": 3,
-      "concept_name": "Predictive Contract Assistant",
-      "readiness_score": 61.5,
-      "recommended_outcome": "Reusable Asset"
+      "concept_name": "Smart Contract Copilot",
+      "readiness_score": 60.6,
+      "recommended_outcome": "Incubate"
     }
   ],
   "archive_candidates": [
-    "Auto-Document for Energy",
-    "Smart Workflow Copilot",
-    "Predictive Forecast Assistant"
+    "Auto-Document for Telecommunications",
+    "Smart Workflow Copilot"
   ]
 }
