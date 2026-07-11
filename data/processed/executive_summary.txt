@@ -2,43 +2,43 @@ Executive Summary
 The portfolio analysis ranks 12 concepts across 6 industries.
 
 --- Portfolio Distribution ---
-  Incubate: 7 concept(s)
-  Customer Pilot: 2 concept(s)
-  Archive: 2 concept(s)
+  Archive: 6 concept(s)
+  Customer Pilot: 4 concept(s)
   Reusable Asset: 1 concept(s)
+  Incubate: 1 concept(s)
 
 --- Top Recommendations (Move Forward) ---
-  #1 Compliance Intelligence Platform — Customer Pilot (readiness 66.3/100, confidence 83%)
-     Evidence: strong demand intensity (0.55); deep sandbox engagement (norm=1.00); repeatable usage patterns (0.43); solid revenue potential (0.46); high follow-up rate (87%)
-  #2 Automated Invoice Assistant — Incubate (readiness 62.6/100, confidence 97%)
-     Evidence: deep sandbox engagement (norm=0.79); demand consistent across segments; negative customer sentiment (5%); high capability request rate (91%)
-  #3 Smart Contract Copilot — Incubate (readiness 60.6/100, confidence 78%)
-     Evidence: demand consistent across segments; favorable feasibility profile (0.24); limited evidence confidence (0.69); high follow-up rate (47%); negative customer sentiment (0%)
+  #1 Intelligent Document Router — Customer Pilot (readiness 64.2/100, confidence 81%)
+     Evidence: deep sandbox engagement (norm=0.88); demand consistent across segments; high follow-up rate (47%); negative customer sentiment (19%); high capability request rate (94%)
+  #2 Smart Workforce Copilot — Customer Pilot (readiness 63.8/100, confidence 90%)
+     Evidence: strong demand intensity (0.50); deep sandbox engagement (norm=1.00); demand consistent across segments; solid revenue potential (0.42); favorable feasibility profile (0.24)
+  #3 Customer Resolution Engine — Customer Pilot (readiness 62.0/100, confidence 93%)
+     Evidence: strong demand intensity (0.50); deep sandbox engagement (norm=0.51); repeatable usage patterns (0.30); solid revenue potential (0.44); favorable feasibility profile (0.23)
 
 --- Customer Pilots (Ready for Live Testing) ---
-  • Compliance Intelligence Platform (Energy & Utilities) — readiness 66.3/100
-  • Auto-Forecast for Energy (Energy & Utilities) — readiness 51.5/100
+  • Intelligent Document Router (Financial Services) — readiness 64.2/100
+  • Smart Workforce Copilot (Public Sector) — readiness 63.8/100
+  • Customer Resolution Engine (Healthcare) — readiness 62.0/100
+  • Workflow Intelligence Platform (Energy & Utilities) — readiness 55.0/100
 
 --- Reusable Assets (Cross-Segment Potential) ---
-  • Predictive Contract Assistant (Retail) — readiness 60.3/100
+  • Predictive Revenue Assistant (Telecommunications) — readiness 58.6/100
 
 --- Incubate (Needs More Evidence) ---
-  • Automated Invoice Assistant (Manufacturing) — readiness 62.6/100
-  • Smart Contract Copilot (Public Sector) — readiness 60.6/100
-  • Predictive Forecast Assistant (Telecommunications) — readiness 60.3/100
-  • Predictive Workflow Assistant (Financial Services) — readiness 58.8/100
-  • Adaptive Invoice Assistant (Energy & Utilities) — readiness 58.1/100
-  • Smart Insight Copilot (Financial Services) — readiness 54.3/100
-  • Auto-Compliance for Telecommunications (Telecommunications) — readiness 53.4/100
+  • Customer Insight Platform (Telecommunications) — readiness 45.1/100
   Action: Schedule additional demos, sharpen positioning, or run focused experiments.
 
 --- Archive (Weak Signal / Poor Fit) ---
-  • Auto-Document for Telecommunications (Telecommunications) — readiness 45.9/100
-  • Smart Workflow Copilot (Financial Services) — readiness 44.6/100
+  • Revenue Intelligence Platform (Healthcare) — readiness 53.1/100
+  • Smart Maintenance Copilot (Energy & Utilities) — readiness 50.6/100
+  • Anomaly Alert System (Manufacturing) — readiness 50.5/100
+  • Fraud Investigation Assistant (Financial Services) — readiness 50.2/100
+  • Logistics Optimization Engine (Manufacturing) — readiness 48.0/100
+  • Productivity Insight Engine (Public Sector) — readiness 46.2/100
   Action: De-prioritize and free resources for higher-signal concepts.
 
 --- Recommended Next Steps ---
-  Customer Pilot (2): Identify 1-2 pilot customers, define success metrics, begin contracting.
+  Customer Pilot (4): Identify 1-2 pilot customers, define success metrics, begin contracting.
   Reusable Asset (1): Evaluate platform packaging, cross-sell potential across industries.
-  Incubate (7): Schedule 2+ additional demos in next quarter, test sharper positioning.
-  Archive (2): Document learnings, archive concepts, redeploy team to top-ranked concepts.
+  Incubate (1): Schedule 2+ additional demos in next quarter, test sharper positioning.
+  Archive (6): Document learnings, archive concepts, redeploy team to top-ranked concepts.

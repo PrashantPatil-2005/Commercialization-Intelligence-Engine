@@ -485,12 +485,6 @@ def build_concept_features(
         else:
             agg[f"{col}_norm"] = 0.0
 
-    agg["engagement_depth_norm"] = (
-        agg["engagement_depth"] / agg["engagement_depth"].max()
-        if agg["engagement_depth"].max() > 0
-        else 0.0
-    )
-
     result = concepts.merge(agg.reset_index(), on="concept_id", how="left", suffixes=("", "_agg"))
     dup_cols = [c for c in result.columns if c.endswith("_agg")]
     result = result.drop(columns=dup_cols)
@@ -560,12 +554,8 @@ def run_pipeline(raw_dir: Path, output_dir: Path) -> dict:
         "segment_similarity",
         "revenue_potential",
         "confidence",
-        "avg_feedback_score",
         "follow_up_rate",
-        "decision_maker_rate",
-        "avg_willingness_to_pay",
         "avg_pilot_interest",
-        "segments_reached",
         "avg_objection_count_text",
         "capability_request_rate",
         "positive_comment_ratio",

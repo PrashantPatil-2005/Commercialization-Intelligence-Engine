@@ -45,19 +45,43 @@ Five phases, each in its own module:
 
 ---
 
-## Why Each Technology Was Selected
+## Why Each Decision Was Made
 
-| Technology | Why |
-|-----------|-----|
-| **pandas** | Standard for tabular data manipulation in Python |
-| **scikit-learn** | Mature ML library with Random Forest, K-Means, preprocessing |
-| **SHAP** | Gold-standard for ML explainability, native TreeExplainer support |
-| **Streamlit** | Fast to prototype, good for data apps, minimal boilerplate |
-| **matplotlib/seaborn** | Standard Python visualization |
-| **Faker** | Realistic synthetic customer names |
-| **Random Forest** | Handles small datasets, provides feature importance, SHAP-compatible |
-| **K-Means** | Simple clustering that works well with normalized features |
-| **Weighted scoring** | Interpretable baseline stakeholders can audit and adjust |
+### Architecture
+
+| Decision | Why (one sentence) |
+|----------|-------------------|
+| 3-layer ML pipeline | Each layer compensates for the others: baseline is interpretable, K-Means discovers groupings, Random Forest captures non-linearity |
+| 70/30 blending | Baseline is more interpretable and trained on domain knowledge; ML adds predictive power but is trained on synthetic labels |
+| K-Means with k=4 | Four clusters map to business-relevant groupings: High/Low Demand × High/Low Effort |
+| Random Forest over XGBoost | RF works well on small datasets (12 samples), doesn't need tuning, and is SHAP-compatible |
+| SHAP over LIME | SHAP has game-theoretic grounding, is deterministic, and TreeExplainer is fast for tree-based models |
+
+### Data Generation
+
+| Decision | Why (one sentence) |
+|----------|-------------------|
+| Beta(2,2) for latent potential | Symmetric distribution centered at 0.5 gives a realistic spread of strong, weak, and middle concepts |
+| Industry → Problem Area dependency | Ensures every concept is believable (healthcare doesn't build fraud detection tools) |
+| Weighted probability weights | Reflects real-world distribution: financial services has more fraud/compliance work |
+| Missing values (~4%) | Simulates real data quality issues without making the dataset unusable |
+
+### Feature Engineering
+
+| Decision | Why (one sentence) |
+|----------|-------------------|
+| 13 concept-level features | Covers demand, engagement, revenue, risk, and text signals — enough for ML without overfitting |
+| Entropy-based segment similarity | Measures whether demand is consistent across customer segments, not just average demand |
+| Confidence = data volume × certainty | More observations + more certain predictions = higher confidence in the recommendation |
+| Keyword sentiment (not transformers) | Simple, fast, and sufficient for a prototype; real deployment would use sentence transformers |
+
+### Dashboard
+
+| Decision | Why (one sentence) |
+|----------|-------------------|
+| Streamlit over Dash/Flask | Fastest way to build a data dashboard in Python; for a prototype, development speed matters more than customization |
+| 5-page structure | Overview for portfolio health, Portfolio for filtering, Explorer for drill-down, Analytics for charts, Model for technical details |
+| Enterprise styling (no emojis) | Internal tool aesthetic — GitHub/Azure Portal style — appropriate for stakeholder-facing prototype |
 
 ---
 
@@ -76,7 +100,7 @@ Five phases, each in its own module:
 | Limitation | Impact | Mitigation |
 |-----------|--------|------------|
 | Synthetic data | Results not validated against real decisions | Architecture transfers to real data |
-| 12 concepts | Cross-validation is noisy (~42% accuracy) | Demonstrates pipeline; production needs 50+ |
+| 12 concepts | Cross-validation is based on synthetic labels (75% accuracy on 3 folds) | Demonstrates pipeline; production needs 50+ |
 | Rule-based labels | RF trained on synthetic rules | With real labels, accuracy becomes meaningful |
 | Keyword sentiment | Low discriminative power | Real deployment would use transformer embeddings |
 | Single random seed | Deterministic results | Different seeds give similar structural outcomes |

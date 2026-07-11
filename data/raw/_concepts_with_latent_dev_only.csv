@@ -1,13 +1,13 @@
 concept_id,concept_name,industry,problem_area,target_user,delivery_complexity,strategic_fit,_latent_commercial_potential
-CONCEPT-001,Smart Workflow Copilot,Financial Services,Supply Chain Optimization,Operations Manager,3,0.447,0.1693
-CONCEPT-002,Auto-Forecast for Energy,Energy & Utilities,Revenue Forecasting,Operations Manager,2,0.621,0.6372
-CONCEPT-003,Smart Contract Copilot,Public Sector,Customer Service Automation,CIO / CTO,2,0.708,0.6321
-CONCEPT-004,Predictive Contract Assistant,Retail,Workforce Productivity,CIO / CTO,4,0.649,0.6747
-CONCEPT-005,Automated Invoice Assistant,Manufacturing,Predictive Maintenance,Customer Success Director,3,0.622,0.518
-CONCEPT-006,Predictive Forecast Assistant,Telecommunications,Supply Chain Optimization,Business Analyst,3,0.631,0.5667
-CONCEPT-007,Predictive Workflow Assistant,Financial Services,Customer Service Automation,Business Analyst,3,0.649,0.5768
-CONCEPT-008,Smart Insight Copilot,Financial Services,Customer Service Automation,CIO / CTO,2,0.463,0.4429
-CONCEPT-009,Auto-Document for Telecommunications,Telecommunications,Document Intelligence,Customer Success Director,3,0.499,0.3101
-CONCEPT-010,Adaptive Invoice Assistant,Energy & Utilities,Customer Service Automation,Customer Success Director,3,0.641,0.5856
-CONCEPT-011,Auto-Compliance for Telecommunications,Telecommunications,Revenue Forecasting,Data Science Lead,2,0.563,0.3863
-CONCEPT-012,Compliance Intelligence Platform,Energy & Utilities,Customer Service Automation,Customer Success Director,3,0.73,0.6652
+CONCEPT-001,Revenue Intelligence Platform,Healthcare,Revenue Forecasting,Data Science Lead,4,0.626,0.4245
+CONCEPT-002,Logistics Optimization Engine,Manufacturing,Supply Chain Optimization,Operations Manager,4,0.463,0.2149
+CONCEPT-003,Intelligent Document Router,Financial Services,Document Intelligence,CIO / CTO,3,0.643,0.6814
+CONCEPT-004,Anomaly Alert System,Manufacturing,Predictive Maintenance,Operations Manager,4,0.538,0.4885
+CONCEPT-005,Smart Workforce Copilot,Public Sector,Workforce Productivity,Business Analyst,2,0.416,0.6522
+CONCEPT-006,Customer Insight Platform,Telecommunications,Customer Service Automation,Customer Success Director,3,0.583,0.5025
+CONCEPT-007,Fraud Investigation Assistant,Financial Services,Fraud Detection,Data Science Lead,4,0.863,0.2636
+CONCEPT-008,Smart Maintenance Copilot,Energy & Utilities,Predictive Maintenance,Operations Manager,4,0.532,0.3331
+CONCEPT-009,Productivity Insight Engine,Public Sector,Workforce Productivity,CIO / CTO,3,0.331,0.4048
+CONCEPT-010,Workflow Intelligence Platform,Energy & Utilities,Workforce Productivity,CIO / CTO,3,0.33,0.6524
+CONCEPT-011,Predictive Revenue Assistant,Telecommunications,Revenue Forecasting,Business Analyst,3,0.792,0.5998
+CONCEPT-012,Customer Resolution Engine,Healthcare,Customer Service Automation,Operations Manager,2,0.469,0.6463

@@ -44,25 +44,253 @@ INDUSTRIES = [
     "Public Sector",
 ]
 
-PROBLEM_AREAS = [
-    "Document Intelligence",
-    "Predictive Maintenance",
-    "Customer Service Automation",
-    "Fraud Detection",
-    "Supply Chain Optimization",
-    "Workforce Productivity",
-    "Compliance Monitoring",
-    "Revenue Forecasting",
-]
+# ---------------------------------------------------------------------------
+# Metadata dependency model
+# ---------------------------------------------------------------------------
+# Each concept is generated as: Industry → Problem Area → Target User → Name
+# This ensures every generated concept is internally consistent and believable.
+#
+# Assumptions:
+#   1. Industry determines which problem areas are relevant (a healthcare company
+#      does not build fraud detection tools).
+#   2. Problem area determines which target user owns that problem (a compliance
+#      officer owns compliance monitoring, not a customer success director).
+#   3. Concept name is derived from the problem area and industry, not randomly
+#      assembled from generic nouns and adjectives.
+#   4. Weights reflect real-world distribution: financial services has more fraud
+#      and compliance work; manufacturing has more predictive maintenance.
+# ---------------------------------------------------------------------------
 
-TARGET_USERS = [
-    "Operations Manager",
-    "Data Science Lead",
-    "CIO / CTO",
-    "Business Analyst",
-    "Customer Success Director",
-    "Risk & Compliance Officer",
-]
+# Industry → Problem Area (weighted)
+INDUSTRY_PROBLEM_AREAS = {
+    "Financial Services": [
+        ("Fraud Detection", 0.35),
+        ("Compliance Monitoring", 0.30),
+        ("Revenue Forecasting", 0.20),
+        ("Document Intelligence", 0.15),
+    ],
+    "Healthcare": [
+        ("Document Intelligence", 0.40),
+        ("Compliance Monitoring", 0.30),
+        ("Customer Service Automation", 0.25),
+        ("Revenue Forecasting", 0.05),
+    ],
+    "Manufacturing": [
+        ("Predictive Maintenance", 0.35),
+        ("Supply Chain Optimization", 0.30),
+        ("Workforce Productivity", 0.20),
+        ("Compliance Monitoring", 0.15),
+    ],
+    "Retail": [
+        ("Customer Service Automation", 0.30),
+        ("Supply Chain Optimization", 0.30),
+        ("Revenue Forecasting", 0.25),
+        ("Document Intelligence", 0.15),
+    ],
+    "Telecommunications": [
+        ("Customer Service Automation", 0.30),
+        ("Revenue Forecasting", 0.25),
+        ("Predictive Maintenance", 0.25),
+        ("Compliance Monitoring", 0.20),
+    ],
+    "Energy & Utilities": [
+        ("Predictive Maintenance", 0.35),
+        ("Compliance Monitoring", 0.30),
+        ("Workforce Productivity", 0.20),
+        ("Supply Chain Optimization", 0.15),
+    ],
+    "Public Sector": [
+        ("Document Intelligence", 0.30),
+        ("Compliance Monitoring", 0.30),
+        ("Workforce Productivity", 0.25),
+        ("Customer Service Automation", 0.15),
+    ],
+}
+
+# Problem Area → Target User (weighted)
+PROBLEM_TARGET_USERS = {
+    "Fraud Detection": [
+        ("Risk & Compliance Officer", 0.45),
+        ("Data Science Lead", 0.35),
+        ("Business Analyst", 0.20),
+    ],
+    "Compliance Monitoring": [
+        ("Risk & Compliance Officer", 0.45),
+        ("Business Analyst", 0.30),
+        ("CIO / CTO", 0.25),
+    ],
+    "Revenue Forecasting": [
+        ("Business Analyst", 0.40),
+        ("CIO / CTO", 0.35),
+        ("Data Science Lead", 0.25),
+    ],
+    "Document Intelligence": [
+        ("Operations Manager", 0.40),
+        ("Business Analyst", 0.35),
+        ("CIO / CTO", 0.25),
+    ],
+    "Customer Service Automation": [
+        ("Customer Success Director", 0.40),
+        ("Operations Manager", 0.35),
+        ("Business Analyst", 0.25),
+    ],
+    "Predictive Maintenance": [
+        ("Operations Manager", 0.45),
+        ("Data Science Lead", 0.35),
+        ("CIO / CTO", 0.20),
+    ],
+    "Supply Chain Optimization": [
+        ("Operations Manager", 0.45),
+        ("Business Analyst", 0.30),
+        ("CIO / CTO", 0.25),
+    ],
+    "Workforce Productivity": [
+        ("Operations Manager", 0.35),
+        ("CIO / CTO", 0.35),
+        ("Business Analyst", 0.30),
+    ],
+}
+
+# Problem Area → Concept Name templates (each with a domain-specific noun)
+PROBLEM_CONCEPT_NAMES = {
+    "Fraud Detection": [
+        "Fraud Investigation Assistant",
+        "Transaction Anomaly Detector",
+        "Smart Fraud Copilot",
+        "Fraud Pattern Intelligence",
+    ],
+    "Compliance Monitoring": [
+        "Compliance Intelligence Platform",
+        "Regulatory Insight Engine",
+        "Auto-Compliance Assistant",
+        "Compliance Risk Navigator",
+    ],
+    "Revenue Forecasting": [
+        "Revenue Intelligence Platform",
+        "Smart Forecast Copilot",
+        "Predictive Revenue Assistant",
+        "Demand Sensing Engine",
+    ],
+    "Document Intelligence": [
+        "Document Intelligence Platform",
+        "Smart Document Copilot",
+        "Document Processing Assistant",
+        "Intelligent Document Router",
+    ],
+    "Customer Service Automation": [
+        "Customer Insight Platform",
+        "Smart Ticket Copilot",
+        "Service Automation Assistant",
+        "Customer Resolution Engine",
+    ],
+    "Predictive Maintenance": [
+        "Predictive Maintenance Platform",
+        "Smart Maintenance Copilot",
+        "Equipment Health Monitor",
+        "Anomaly Alert System",
+    ],
+    "Supply Chain Optimization": [
+        "Supply Chain Intelligence",
+        "Smart Inventory Forecaster",
+        "Supply Risk Navigator",
+        "Logistics Optimization Engine",
+    ],
+    "Workforce Productivity": [
+        "Workflow Intelligence Platform",
+        "Smart Workforce Copilot",
+        "Productivity Insight Engine",
+        "Team Efficiency Assistant",
+    ],
+}
+
+# ---------------------------------------------------------------------------
+# Delivery complexity by problem area
+# ---------------------------------------------------------------------------
+# Complexity reflects technical difficulty, regulatory burden, and integration effort.
+# Scale: 1 (trivial) to 5 (very hard).
+#
+# Why Fraud Detection is 4-5:
+#   - Real-time transaction scoring at scale
+#   - Regulatory requirements (SOX, PCI-DSS)
+#   - Adversarial environment (fraudsters adapt)
+#   - False positives have high business cost
+#
+# Why Compliance Monitoring is 4-5:
+#   - Must satisfy auditors (evidence trails)
+#   - Explainability is mandatory (not optional)
+#   - Cross-system data aggregation
+#   - Regulatory changes require model updates
+#
+# Why Predictive Maintenance is 4-5:
+#   - IoT sensor data (noisy, high-frequency)
+#   - Real-time inference requirements
+#   - Hardware integration (edge devices)
+#   - Failure is expensive (false negatives hurt)
+#
+# Why Customer Service Automation is 2-3:
+#   - Chatbots are well-understood
+#   - NLP libraries are mature
+#   - Integration is standard (CRM, ticketing)
+#   - Failure is low-cost (bad UX, not safety)
+# ---------------------------------------------------------------------------
+PROBLEM_COMPLEXITY = {
+    "Fraud Detection": (4, 5),
+    "Compliance Monitoring": (4, 5),
+    "Predictive Maintenance": (4, 5),
+    "Document Intelligence": (3, 4),
+    "Revenue Forecasting": (3, 4),
+    "Supply Chain Optimization": (3, 4),
+    "Customer Service Automation": (2, 3),
+    "Workforce Productivity": (2, 3),
+}
+
+# ---------------------------------------------------------------------------
+# Strategic fit base by problem area
+# ---------------------------------------------------------------------------
+# Strategic fit reflects market demand, revenue potential, and NTT DATA positioning.
+# Scale: 0.0 (misaligned) to 1.0 (perfect fit).
+#
+# Why Fraud Detection is high (0.65-0.85):
+#   - Direct revenue protection (hard ROI)
+#   - Every financial institution needs this
+#   - NTT DATA has strong FS consulting practice
+#
+# Why Compliance Monitoring is high (0.60-0.80):
+#   - Regulatory mandate (must-do, not nice-to-have)
+#   - Cross-industry applicability
+#   - Recurring revenue model (regulations change)
+#
+# Why Revenue Forecasting is medium-high (0.55-0.75):
+#   - Clear business value (forecasting accuracy)
+#   - Well-understood problem domain
+#   - Competition from established vendors
+#
+# Why Workforce Productivity is lower (0.35-0.55):
+#   - Crowded market (Slack, Teams, Asana)
+#   - Harder to demonstrate ROI
+#   - Often internal tools, not external products
+# ---------------------------------------------------------------------------
+PROBLEM_STRATEGIC_FIT = {
+    "Fraud Detection": (0.65, 0.85),
+    "Compliance Monitoring": (0.60, 0.80),
+    "Revenue Forecasting": (0.55, 0.75),
+    "Predictive Maintenance": (0.50, 0.70),
+    "Document Intelligence": (0.45, 0.65),
+    "Supply Chain Optimization": (0.45, 0.65),
+    "Customer Service Automation": (0.40, 0.60),
+    "Workforce Productivity": (0.35, 0.55),
+}
+
+# Industry adjustment to strategic fit (some industries pay more for AI)
+INDUSTRY_FIT_ADJUSTMENT = {
+    "Financial Services": 0.10,    # High AI adoption, big budgets
+    "Healthcare": 0.05,            # Growing AI interest, regulatory caution
+    "Telecommunications": 0.05,    # Mature IT, moderate AI spend
+    "Manufacturing": 0.00,         # Baseline
+    "Retail": 0.00,                # Baseline
+    "Energy & Utilities": -0.05,   # Conservative, slow adoption
+    "Public Sector": -0.10,        # Procurement friction, low AI budgets
+}
 
 SEGMENTS = ["Enterprise", "Mid-Market", "SMB", "Public Sector", "Startup"]
 
@@ -88,15 +316,72 @@ OBJECTION_THEMES = [
     "budget already allocated elsewhere",
 ]
 
-REQUESTED_CAPABILITIES = [
-    "SSO and role-based access control",
-    "API integration with Salesforce",
+# Industry-specific pain points
+INDUSTRY_PAIN_POINTS = {
+    "Financial Services": [
+        "Regulatory reporting takes 3 weeks each cycle.",
+        "False positives in fraud detection overwhelm the team.",
+        "Customer onboarding requires manual document review.",
+    ],
+    "Healthcare": [
+        "Clinician documentation consumes 2 hours per patient.",
+        "Compliance audits require manual evidence gathering.",
+        "Patient intake forms are inconsistent across facilities.",
+    ],
+    "Manufacturing": [
+        "Unplanned downtime costs $50K per incident.",
+        "Quality inspection is 100% manual and error-prone.",
+        "Spare parts inventory is overstocked by 40%.",
+    ],
+    "Retail": [
+        "Demand forecasting misses seasonal spikes by 25%.",
+        "Customer service response time exceeds 48 hours.",
+        "Inventory shrinkage is not detected until quarterly review.",
+    ],
+    "Telecommunications": [
+        "Network fault triage takes 45 minutes per incident.",
+        "Churn prediction models are updated only annually.",
+        "Customer complaints are分散 across 5 ticketing systems.",
+    ],
+    "Energy & Utilities": [
+        "Equipment failure predictions have 60% false negative rate.",
+        "Compliance reporting requires 3 separate manual systems.",
+        "Field technician scheduling is done manually each morning.",
+    ],
+    "Public Sector": [
+        "Citizen request processing takes 14 days average.",
+        "Grant application review is entirely manual.",
+        "Cross-agency data sharing is blocked by siloed systems.",
+    ],
+}
+
+# Fallback pain points (should not be needed, but safety net)
+PAIN_POINTS = [
+    "Manual processes are slowing down the team.",
+    "Data is siloed across multiple systems.",
+    "Current tools do not scale with our growth.",
+]
+
+# Feedback-score-dependent capabilities
+HIGH_FEEDBACK_CAPABILITIES = [
     "custom model retraining pipeline",
-    "audit trail and explainability dashboard",
-    "multi-language document support",
-    "on-premise deployment option",
     "real-time alerting via Slack/Teams",
     "batch and streaming inference modes",
+    "A/B testing framework for model variants",
+]
+
+MID_FEEDBACK_CAPABILITIES = [
+    "audit trail and explainability dashboard",
+    "multi-language document support",
+    "API integration with Salesforce",
+    "role-based access control with SSO",
+]
+
+LOW_FEEDBACK_CAPABILITIES = [
+    "on-premise deployment option",
+    "data export to Excel/CSV",
+    "simplified admin console",
+    "email-only notification mode",
 ]
 
 POSITIVE_COMMENTS = [
@@ -124,37 +409,15 @@ NEGATIVE_COMMENTS = [
     "Competing internal project may cover similar ground.",
 ]
 
-CONCEPT_NAME_TEMPLATES = [
-    "{adj} {noun} Assistant",
-    "Auto-{noun} for {industry_short}",
-    "{noun} Intelligence Platform",
-    "Smart {noun} Copilot",
-]
-
-CONCEPT_NOUNS = [
-    "Document",
-    "Contract",
-    "Invoice",
-    "Ticket",
-    "Forecast",
-    "Anomaly",
-    "Compliance",
-    "Workflow",
-    "Insight",
-]
-
-CONCEPT_ADJECTIVES = [
-    "Intelligent",
-    "Adaptive",
-    "Predictive",
-    "Conversational",
-    "Automated",
-]
+def _weighted_choice(options_weights: list[tuple], rng: np.random.Generator) -> str:
+    """Pick from a list of (item, weight) tuples."""
+    items, weights = zip(*options_weights)
+    return rng.choice(items, p=np.array(weights) / sum(weights))
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+def _concept_name_for_problem(problem_area: str, rng: np.random.Generator) -> str:
+    """Pick a concept name from the domain-specific pool for this problem area."""
+    return rng.choice(PROBLEM_CONCEPT_NAMES[problem_area])
 
 def _clip(series: pd.Series, low: float, high: float) -> pd.Series:
     return series.clip(low, high)
@@ -181,67 +444,77 @@ def _random_date(rng: np.random.Generator, start: datetime, end: datetime) -> da
     return start + timedelta(days=offset)
 
 
-def _concept_name(rng: np.random.Generator, industry: str) -> str:
-    template = rng.choice(CONCEPT_NAME_TEMPLATES)
-    industry_short = industry.split()[0]
-    return template.format(
-        adj=rng.choice(CONCEPT_ADJECTIVES),
-        noun=rng.choice(CONCEPT_NOUNS),
-        industry_short=industry_short,
-    )
-
-
 # ---------------------------------------------------------------------------
 # Generators
 # ---------------------------------------------------------------------------
 
 def generate_product_concepts(rng: np.random.Generator) -> pd.DataFrame:
-    """One row per concept. latent_commercial_potential is hidden driver."""
+    """One row per concept. latent_commercial_potential is hidden driver.
+
+    Metadata generation follows a dependency chain:
+        Industry → Problem Area → Target User → Concept Name
+
+    Delivery complexity depends on problem area (technical difficulty).
+    Strategic fit depends on problem area + industry (market potential).
+
+    A validation loop ensures every concept is internally consistent.
+    """
     rows = []
     used_names: set[str] = set()
-    for i in range(NUM_CONCEPTS):
-        concept_id = f"CONCEPT-{i + 1:03d}"
+    concept_num = 0
+
+    while concept_num < NUM_CONCEPTS:
+        concept_id = f"CONCEPT-{concept_num + 1:03d}"
+        latent = float(rng.beta(2, 2))
+
+        # Step 1: Industry
         industry = rng.choice(INDUSTRIES)
-        latent = float(rng.beta(2, 2))  # Beta(2,2) gives a symmetric spread centered ~0.5
 
-        # Strategic fit correlates with latent potential but not perfectly
-        strategic_fit = _clip(
-            pd.Series([latent * 0.6 + rng.uniform(0.15, 0.35)]),
-            0.1,
-            1.0,
-        ).iloc[0]
+        # Step 2: Problem Area (depends on Industry)
+        problem_area = _weighted_choice(INDUSTRY_PROBLEM_AREAS[industry], rng)
 
-        # High-value concepts tend to be harder to deliver (realistic tension)
-        delivery_complexity = int(
-            np.round(
-                np.clip(
-                    rng.normal(loc=3.5 - latent * 1.2, scale=0.9),
-                    1,
-                    5,
-                )
-            )
-        )
+        # Step 3: Target User (depends on Problem Area)
+        target_user = _weighted_choice(PROBLEM_TARGET_USERS[problem_area], rng)
 
-        # Ensure unique concept names across the portfolio
-        name = _concept_name(rng, industry)
+        # Step 4: Concept Name (depends on Problem Area)
+        name = _concept_name_for_problem(problem_area, rng)
         attempts = 0
-        while name in used_names and attempts < 50:
-            name = _concept_name(rng, industry)
+        while name in used_names and attempts < 20:
+            name = _concept_name_for_problem(problem_area, rng)
             attempts += 1
+
+        # --- Validation: reject if name is duplicate after 20 attempts ---
+        if name in used_names:
+            continue  # restart this concept with fresh random draws
+
         used_names.add(name)
+
+        # Step 5: Delivery Complexity (depends on Problem Area)
+        #   Base range from PROBLEM_COMPLEXITY, then add small noise
+        lo, hi = PROBLEM_COMPLEXITY[problem_area]
+        base = rng.uniform(lo, hi)
+        delivery_complexity = int(np.clip(np.round(base), 1, 5))
+
+        # Step 6: Strategic Fit (depends on Problem Area + Industry)
+        #   Base range from PROBLEM_STRATEGIC_FIT, adjusted by industry
+        lo, hi = PROBLEM_STRATEGIC_FIT[problem_area]
+        base = rng.uniform(lo, hi)
+        adjustment = INDUSTRY_FIT_ADJUSTMENT[industry]
+        strategic_fit = float(np.clip(base + adjustment, 0.1, 1.0))
 
         rows.append(
             {
                 "concept_id": concept_id,
                 "concept_name": name,
                 "industry": industry,
-                "problem_area": rng.choice(PROBLEM_AREAS),
-                "target_user": rng.choice(TARGET_USERS),
+                "problem_area": problem_area,
+                "target_user": target_user,
                 "delivery_complexity": delivery_complexity,
                 "strategic_fit": round(strategic_fit, 3),
-                "_latent_commercial_potential": round(latent, 4),  # dev only
+                "_latent_commercial_potential": round(latent, 4),
             }
         )
+        concept_num += 1
 
     return pd.DataFrame(rows)
 
@@ -486,12 +759,15 @@ def generate_text_feedback(
 ) -> pd.DataFrame:
     """Qualitative feedback correlated with commercial signal strength."""
     latent_map = concepts.set_index("concept_id")["_latent_commercial_potential"].to_dict()
+    industry_map = concepts.set_index("concept_id")["industry"].to_dict()
     commercial_map = commercial.set_index(["customer_id", "concept_id"])["willingness_to_pay"].to_dict()
 
     rows = []
     for _, row in demos.drop_duplicates(subset=["customer_id", "concept_id"]).iterrows():
         key = (row["customer_id"], row["concept_id"])
-        latent = latent_map[row["concept_id"]]
+        concept_id = row["concept_id"]
+        latent = latent_map[concept_id]
+        industry = industry_map[concept_id]
         wtp = commercial_map.get(key, np.nan)
         feedback = row["feedback_score"] if pd.notna(row["feedback_score"]) else 3.0
 
@@ -511,15 +787,24 @@ def generate_text_feedback(
         objection_sample = rng.choice(OBJECTION_THEMES, size=min(n_objections, 3), replace=False)
         objection_text = "; ".join(objection_sample) if len(objection_sample) > 0 else np.nan
 
+        industry_pain_points = INDUSTRY_PAIN_POINTS.get(industry, PAIN_POINTS)
+
+        if feedback >= 4.0:
+            cap_pool = HIGH_FEEDBACK_CAPABILITIES
+        elif feedback >= 3.0:
+            cap_pool = MID_FEEDBACK_CAPABILITIES
+        else:
+            cap_pool = LOW_FEEDBACK_CAPABILITIES
+
         rows.append(
             {
                 "customer_id": row["customer_id"],
-                "concept_id": row["concept_id"],
+                "concept_id": concept_id,
                 "customer_comments": rng.choice(comment_pool),
-                "pain_point_statements": rng.choice(PAIN_POINTS),
+                "pain_point_statements": rng.choice(industry_pain_points),
                 "objection_themes": objection_text,
                 "requested_capabilities": "; ".join(
-                    rng.choice(REQUESTED_CAPABILITIES, size=int(rng.integers(1, 4)), replace=False)
+                    rng.choice(cap_pool, size=min(int(rng.integers(1, 4)), len(cap_pool)), replace=False)
                 ),
             }
         )

@@ -1,5 +1,5 @@
 cluster_id,cluster_profile,concept_count,avg_demand,avg_risk,avg_readiness,concepts
-0,Low Demand / High Effort,2,0.149,0.453,45.25,"Smart Workflow Copilot, Auto-Document for Telecommunications"
-1,High Demand / High Effort,2,0.547,0.488,63.3,"Predictive Contract Assistant, Compliance Intelligence Platform"
-2,Low Demand / Low Effort,4,0.364,0.247,54.95,"Auto-Forecast for Energy, Smart Contract Copilot, Smart Insight Copilot, Auto-Compliance for Telecommunications"
-3,High Demand / Low Effort,4,0.394,0.415,59.95,"Automated Invoice Assistant, Predictive Forecast Assistant, Predictive Workflow Assistant, Adaptive Invoice Assistant"
+0,High Demand / Low Effort,2,0.502,0.234,62.9,"Smart Workforce Copilot, Customer Resolution Engine"
+1,Low Demand / High Effort,4,0.186,0.571,48.75,"Logistics Optimization Engine, Fraud Investigation Assistant, Smart Maintenance Copilot, Productivity Insight Engine"
+2,Low Demand / High Effort (2),3,0.335,0.535,49.567,"Revenue Intelligence Platform, Anomaly Alert System, Customer Insight Platform"
+3,High Demand / Low Effort (3),3,0.45,0.409,59.267,"Intelligent Document Router, Workflow Intelligence Platform, Predictive Revenue Assistant"

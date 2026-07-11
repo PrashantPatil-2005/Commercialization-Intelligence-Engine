@@ -114,10 +114,11 @@ def _format_contribution(feature: str, row: pd.Series, shap_val: float) -> str:
             return f"elevated {label} (score: {score})"
         return f"manageable {label} (score: {score})"
 
-    # For positive features, describe the actual value strength, not just SHAP direction
+    # For positive features, describe the actual value strength
     if shap_val > 0:
         return f"{strength} {label} (score: {score})"
-    return f"{strength} {label} (score: {score})"
+    # SHAP is negative but value may still be meaningful — note the tension
+    return f"{strength} {label} (score: {score}, but weakens prediction)"
 
 
 def generate_narrative(
@@ -196,7 +197,7 @@ def generate_executive_summary(recommendations: pd.DataFrame, top_n: int = 3) ->
         if row.get("key_evidence"):
             lines.append(f"     Evidence: {row['key_evidence']}")
 
-    if not pilots.empty and len(pilots) > 0:
+    if not pilots.empty:
         lines.append("")
         lines.append("--- Customer Pilots (Ready for Live Testing) ---")
         for _, row in pilots.iterrows():
@@ -205,7 +206,7 @@ def generate_executive_summary(recommendations: pd.DataFrame, top_n: int = 3) ->
                 f"readiness {row['readiness_score']}/100"
             )
 
-    if not assets.empty and len(assets) > 0:
+    if not assets.empty:
         lines.append("")
         lines.append("--- Reusable Assets (Cross-Segment Potential) ---")
         for _, row in assets.iterrows():
@@ -214,7 +215,7 @@ def generate_executive_summary(recommendations: pd.DataFrame, top_n: int = 3) ->
                 f"readiness {row['readiness_score']}/100"
             )
 
-    if not incubate.empty and len(incubate) > 0:
+    if not incubate.empty:
         lines.append("")
         lines.append("--- Incubate (Needs More Evidence) ---")
         for _, row in incubate.iterrows():
@@ -293,6 +294,8 @@ def run_insight_layer(artifacts: dict, output_dir: Path, top_n: int = 3) -> pd.D
         "portfolio_rank",
         "concept_id",
         "concept_name",
+        "industry",
+        "problem_area",
         "recommended_outcome",
         "readiness_score",
         "confidence_score",
@@ -334,7 +337,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    _report, artifacts = run_decision_engine(args.features, args.output)
+    _report, artifacts = run_decision_engine(args.features, args.output)  # noqa: F841
     insights = run_insight_layer(artifacts, args.output)
 
     print("--- Phase 4: AI Insight Layer ---")
