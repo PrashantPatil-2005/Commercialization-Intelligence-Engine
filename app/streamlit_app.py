@@ -18,8 +18,8 @@ sys.path.insert(0, str(ROOT))
 from app.theme import (
     get_theme, set_theme, toggle_theme, is_dark,
     PROCESSED_DIR, PAGE_CONFIG,
-    FONT_SM, FONT_MD, FONT_LG,
-    WEIGHT_SEMIBOLD,
+    FONT_XS, FONT_SM, FONT_MD, FONT_LG,
+    WEIGHT_SEMIBOLD, WEIGHT_BOLD, WEIGHT_MEDIUM,
 )
 from app.styles import inject_css
 from app.components import muted_callout
@@ -49,22 +49,21 @@ def render_sidebar():
     t = get_theme()
 
     with st.sidebar:
+        # --- Logo + Branding ---
+        st.markdown(
+            f'<div style="padding:0 0 4px 0">'
+            f'<div style="font-size:{FONT_LG};font-weight:{WEIGHT_BOLD};color:{t["text_primary"]};letter-spacing:0.02em">CIE</div>'
+            f'<div style="font-size:{FONT_XS};color:{t["text_muted"]};margin-top:-1px">Intelligence Engine</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
+
         # --- Theme Toggle (single button) ---
         icon = "☀️" if is_dark() else "🌙"
         if st.button(icon, key="theme_toggle", help="Toggle theme"):
             toggle_theme()
             st.rerun()
 
-        st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
-
-        # --- Branding ---
-        st.markdown(
-            f'<div style="padding:4px 0">'
-            f'<div style="font-size:{FONT_MD};font-weight:{WEIGHT_SEMIBOLD};color:{t["text_primary"]}">CIE</div>'
-            f'<div style="font-size:{FONT_SM};color:{t["text_secondary"]}">Commercialization Intelligence Engine</div>'
-            f'</div>',
-            unsafe_allow_html=True,
-        )
         st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
 
         # --- Navigation ---
@@ -96,8 +95,19 @@ def render_sidebar():
 
         # --- Footer ---
         st.markdown(
-            f'<div style="padding-top:20px;font-size:{FONT_SM};color:{t["text_muted"]};text-align:center">'
-            f'v2.0 &middot; Python, scikit-learn, SHAP'
+            f'<div class="sidebar-footer">'
+            f'<div class="sidebar-footer-row">'
+            f'<span class="sidebar-footer-label">Status</span>'
+            f'<span class="sidebar-footer-value"><span class="sidebar-status-dot"></span>Operational</span>'
+            f'</div>'
+            f'<div class="sidebar-footer-row">'
+            f'<span class="sidebar-footer-label">Version</span>'
+            f'<span class="sidebar-footer-value">2.0</span>'
+            f'</div>'
+            f'<div class="sidebar-footer-row">'
+            f'<span class="sidebar-footer-label">Stack</span>'
+            f'<span class="sidebar-footer-value">Python + scikit-learn + SHAP</span>'
+            f'</div>'
             f'</div>',
             unsafe_allow_html=True,
         )

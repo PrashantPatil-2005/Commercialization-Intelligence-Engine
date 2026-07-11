@@ -124,23 +124,75 @@ section[data-testid="stSidebar"] .stRadio > div > label[data-checked="true"] {{
 }}
 
 /* ============================================================
+   SIDEBAR HEADER
+   ============================================================ */
+
+/* ============================================================
+   SIDEBAR FOOTER
+   ============================================================ */
+.sidebar-footer {{
+    padding: 12px 0 4px 0;
+    border-top: 1px solid var(--border);
+    margin-top: auto;
+}}
+.sidebar-footer-row {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+}}
+.sidebar-footer-label {{
+    font-size: {FONT_XS};
+    color: var(--txm);
+}}
+.sidebar-footer-value {{
+    font-size: {FONT_XS};
+    color: var(--tx2);
+    font-weight: {WEIGHT_MEDIUM};
+}}
+.sidebar-status-dot {{
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: {t["success"]};
+    margin-right: 4px;
+    vertical-align: middle;
+}}
+
+/* ============================================================
    PAGE HEADER
    ============================================================ */
 .page-header {{
     margin-bottom: 16px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
 }}
 .page-header h2 {{
     font-size: {FONT_2XL};
     font-weight: {WEIGHT_SEMIBOLD};
     color: var(--tx);
-    margin: 0 0 4px 0;
+    margin: 0;
+}}
+.page-header .page-tag {{
+    font-size: {FONT_XS};
+    font-weight: {WEIGHT_MEDIUM};
+    color: var(--txm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    white-space: nowrap;
 }}
 .page-header p {{
     font-size: {FONT_MD};
     color: var(--tx2);
     margin: 0;
+    flex-basis: 100%;
 }}
 
 /* ============================================================
@@ -454,12 +506,14 @@ def inject_css():
 # HTML HELPER FUNCTIONS
 # ============================================================
 
-def page_header(title: str, subtitle: str = "") -> str:
+def page_header(title: str, subtitle: str = "", tag: str = "") -> str:
     t = get_theme()
     safe_title = html_mod.escape(title)
     safe_sub = html_mod.escape(subtitle) if subtitle else ""
+    safe_tag = html_mod.escape(tag) if tag else ""
+    tag_html = f'<span class="page-tag">{safe_tag}</span>' if safe_tag else ""
     sub_html = f'<p>{safe_sub}</p>' if safe_sub else ""
-    return f'<div class="page-header"><h2>{safe_title}</h2>{sub_html}</div>'
+    return f'<div class="page-header"><h2>{safe_title}</h2>{tag_html}{sub_html}</div>'
 
 
 def section_header(text: str) -> str:

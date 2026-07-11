@@ -15,7 +15,8 @@ def render(report: dict, artifacts: dict, insights: pd.DataFrame):
 
     st.markdown(page_header(
         "Portfolio Health",
-        "At-a-glance status of the commercialization pipeline"
+        "At-a-glance status of the commercialization pipeline",
+        tag="Overview"
     ), unsafe_allow_html=True)
 
     outcomes = report["classifier"]["outcome_distribution"]

@@ -31,7 +31,8 @@ def render():
 
     st.markdown(page_header(
         "Decision Engine",
-        "How the system analyzes concepts and generates recommendations"
+        "How the system analyzes concepts and generates recommendations",
+        tag="Model"
     ), unsafe_allow_html=True)
 
     st.markdown(section_header("Pipeline Overview"), unsafe_allow_html=True)

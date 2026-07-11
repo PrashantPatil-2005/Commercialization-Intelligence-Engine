@@ -16,7 +16,8 @@ def render(report: dict, artifacts: dict, insights: pd.DataFrame):
 
     st.markdown(page_header(
         "Investment Decisions",
-        "Filter, compare, and select concepts for advancement"
+        "Filter, compare, and select concepts for advancement",
+        tag="Portfolio"
     ), unsafe_allow_html=True)
 
     outcomes = report["classifier"]["outcome_distribution"]

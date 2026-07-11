@@ -38,7 +38,8 @@ def render(artifacts: dict, insights: pd.DataFrame):
     # Page Header
     st.markdown(page_header(
         f"Decision Report: {row['concept_name']}",
-        f"{row['industry']} &middot; {row.get('problem_area', '')} &middot; Rank #{int(row['portfolio_rank'])}"
+        f"{row['industry']} &middot; {row.get('problem_area', '')} &middot; Rank #{int(row['portfolio_rank'])}",
+        tag="Explorer"
     ), unsafe_allow_html=True)
 
     # Metrics

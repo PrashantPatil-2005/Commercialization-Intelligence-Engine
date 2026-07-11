@@ -18,7 +18,8 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     st.markdown(page_header(
         "Portfolio Analytics",
-        "Patterns, clusters, and feature relationships across concepts"
+        "Patterns, clusters, and feature relationships across concepts",
+        tag="Analytics"
     ), unsafe_allow_html=True)
 
     st.markdown(section_header("Portfolio Performance"), unsafe_allow_html=True)
