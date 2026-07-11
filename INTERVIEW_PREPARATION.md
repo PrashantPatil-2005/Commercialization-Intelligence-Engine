@@ -532,7 +532,7 @@ The notebook is shipped with empty outputs. An interviewer opening it will see n
 
 *Why they ask:* Tests hands-on understanding.
 
-*Ideal answer:* SHAP TreeExplainer computes the contribution of each feature to the prediction for each concept. For Compliance Intelligence Platform, the top positive contributors might be demand_intensity (+0.02) and revenue_potential (+0.015), while feasibility_risk might be negative (-0.008). The narrative generator takes the top 3 positive and top 1 negative contributions and converts them to English: "strong demand intensity, solid revenue potential, despite moderate implementation risk."
+*Ideal answer:* SHAP TreeExplainer computes the contribution of each feature to the prediction for each concept. The pipeline is: RF Prediction → SHAP Explanation → Top Positive Features (SHAP > 0) → Top Negative Features (SHAP < 0) → Structured Evidence Dict → LLM Executive Summary. For example, for a Customer Pilot recommendation, the evidence dict might show: supporting evidence includes moderate pilot interest (SHAP +0.088) and moderate follow-up rate (SHAP +0.065); counter evidence includes minor negative SHAP for capability request rate (SHAP -0.012). The LLM generator reads this evidence and produces: "The model recommends Customer Pilot driven primarily by moderate pilot interest (0.36), along with moderate customer follow-up rate (47%). However, minor weakness in capability request rate (87%)."
 
 *Common mistake:* Not being able to walk through a specific example.
 
@@ -544,7 +544,7 @@ The notebook is shipped with empty outputs. An interviewer opening it will see n
 
 *Why they ask:* Tests AI layer understanding.
 
-*Ideal answer:* It sorts SHAP values by absolute magnitude, takes the top 3 positive contributors and top 1 negative contributor, and formats each as a human-readable string using the _format_contribution function. For example, demand_intensity with SHAP +0.02 and value 0.55 becomes "strong demand intensity (score: 5.5)." The narrative is: "Recommended Outcome: Customer Pilot. Evidence: strong demand intensity, solid revenue potential, despite moderate implementation risk."
+*Ideal answer:* The narrative generator is NOT template-based. It uses a structured evidence-first approach: (1) Build structured evidence dict from SHAP values — supporting features (SHAP > 0) sorted by absolute magnitude, counter features (SHAP < 0) sorted by absolute magnitude; (2) LLM-style generator reads the evidence and produces natural language. For supporting features, it describes raw value strength (e.g., "strong demand intensity (0.55)"). For counter features, it describes SHAP contribution strength (e.g., "significant weakness in revenue potential"). Every sentence maps to a specific SHAP contribution — no invented reasons.
 
 *Common mistake:* Not knowing the specific logic.
 

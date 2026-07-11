@@ -39,9 +39,9 @@ Five phases, each in its own module:
    - **Layer 3 — Random Forest**: Predicts outcome class (supervised, trained on synthetic labels)
    - Final score: 70% baseline + 30% ML confidence
 
-4. **Explainability**: SHAP TreeExplainer computes per-feature contribution to each prediction. Narrative generator converts SHAP values to English.
+4. **Explainability**: SHAP TreeExplainer computes per-feature contribution to each prediction. Evidence is structured into supporting and counter-evidence dicts, then an LLM-style generator produces executive summaries from the evidence only. No templates — every sentence maps to a SHAP value.
 
-5. **Dashboard**: Streamlit app with 4 tabs — Overview, Analytics, Concept Explorer, Model Report.
+5. **Dashboard**: Streamlit app with 5 tabs — Overview, Portfolio, Explorer, Analytics, Model Report.
 
 ---
 

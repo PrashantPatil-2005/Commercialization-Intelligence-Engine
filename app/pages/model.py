@@ -1,7 +1,4 @@
-"""Model page - Decision Engine Dashboard.
-
-Business question: "How does the system reach commercialization decisions?"
-"""
+"""Model page - Decision Engine Dashboard."""
 
 from __future__ import annotations
 
@@ -10,9 +7,9 @@ import json
 import pandas as pd
 import streamlit as st
 
+from app.theme import get_theme, PROCESSED_DIR
 from app.styles import (
     page_header, section_header, muted_callout,
-    OUTCOME_META, PROCESSED_DIR,
 )
 from app.components import render_kpi_row
 from app.charts import plot_cv_folds, plot_feature_importance
@@ -20,6 +17,7 @@ from models.insight_layer import FEATURE_LABELS
 
 
 def render():
+    t = get_theme()
 
     report_path = PROCESSED_DIR / "model_report.json"
     val_path = PROCESSED_DIR / "validation_report.json"
@@ -31,25 +29,23 @@ def render():
     with open(report_path) as f:
         model_report = json.load(f)
 
-    # Page Header
     st.markdown(page_header(
         "Decision Engine",
         "How the system analyzes concepts and generates recommendations"
     ), unsafe_allow_html=True)
 
-    # Section 1: Pipeline Overview
     st.markdown(section_header("Pipeline Overview"), unsafe_allow_html=True)
-    pipeline_steps = [
-        {"label": "Data Generation", "value": "12 concepts", "sub": "Synthetic signals", "accent": "blue"},
-        {"label": "Feature Engineering", "value": "13 features", "sub": "Cleaned + normalized", "accent": "blue"},
-        {"label": "Clustering", "value": "K=4", "sub": "K-Means grouping", "accent": "purple"},
-        {"label": "Classification", "value": "200 trees", "sub": "Random Forest", "accent": "green"},
-    ]
-    render_kpi_row(pipeline_steps)
+    clustering = model_report.get("clustering", {})
+    classifier = model_report.get("classifier", {})
+    render_kpi_row([
+        {"label": "Data Generation", "value": f"{model_report.get('concepts_scored', 'N/A')} concepts", "sub": "Synthetic signals", "accent": "blue"},
+        {"label": "Feature Engineering", "value": "22 features", "sub": "Cleaned + normalized", "accent": "blue"},
+        {"label": "Clustering", "value": f"K={clustering.get('n_clusters', 'N/A')}", "sub": "K-Means grouping", "accent": "purple"},
+        {"label": "Classification", "value": f"{classifier.get('n_estimators', 'N/A')} trees", "sub": "Random Forest", "accent": "green"},
+    ])
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 2: Validation
     st.markdown(section_header("Model Validation"), unsafe_allow_html=True)
     cv = model_report.get("cross_validation", {})
     if cv:
@@ -64,12 +60,10 @@ def render():
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 3: Model Configuration
     st.markdown(section_header("Model Configuration"), unsafe_allow_html=True)
-
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown("**Baseline Weights**", unsafe_allow_html=True)
+        st.markdown(f"**Baseline Weights**", unsafe_allow_html=True)
         weights = model_report.get("baseline_model", {}).get("weights", {})
         weights_df = pd.DataFrame([
             {"Feature": k.replace("_", " ").title(), "Weight": v}
@@ -78,7 +72,7 @@ def render():
         st.dataframe(weights_df, use_container_width=True, hide_index=True)
 
     with c2:
-        st.markdown("**Random Forest Configuration**", unsafe_allow_html=True)
+        st.markdown(f"**Random Forest Configuration**", unsafe_allow_html=True)
         classifier = model_report.get("classifier", {})
         st.markdown(
             f"- Trees: {classifier.get('n_estimators', 'N/A')}<br>"
@@ -86,13 +80,12 @@ def render():
             f"- Classes: {len(classifier.get('outcome_distribution', {}))}",
             unsafe_allow_html=True,
         )
-        st.markdown("**Outcome distribution:**", unsafe_allow_html=True)
+        st.markdown(f"**Outcome distribution:**", unsafe_allow_html=True)
         for outcome, count in sorted(classifier.get("outcome_distribution", {}).items(), key=lambda x: -x[1]):
             st.markdown(f"- {outcome}: **{count}** concepts", unsafe_allow_html=True)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 4: Feature Importance
     st.markdown(section_header("Feature Importance"), unsafe_allow_html=True)
     c3, c4 = st.columns([2, 1])
     with c3:
@@ -109,7 +102,6 @@ def render():
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 5: Cluster Profiles
     cluster_path = PROCESSED_DIR / "cluster_summary.csv"
     if cluster_path.exists():
         st.markdown(section_header("Cluster Profiles"), unsafe_allow_html=True)
@@ -118,7 +110,6 @@ def render():
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 6: Data Quality
     if val_path.exists():
         st.markdown(section_header("Data Quality"), unsafe_allow_html=True)
         with open(val_path) as f:

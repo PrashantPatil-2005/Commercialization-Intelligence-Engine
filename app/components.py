@@ -1,12 +1,22 @@
-"""Reusable UI components for the enterprise dashboard."""
+"""
+Reusable UI Components — Theme-Aware
+
+All colors read from the active theme via get_theme().
+"""
 
 from __future__ import annotations
 
+import html as html_mod
 import pandas as pd
 import streamlit as st
 
+from app.theme import (
+    get_theme, OUTCOME_META,
+    FONT_SM, FONT_MD, FONT_LG, FONT_XL,
+    WEIGHT_SEMIBOLD, WEIGHT_BOLD,
+    LEADING_NORMAL, LEADING_RELAXED,
+)
 from app.styles import (
-    OUTCOME_META, CLUSTER_COLORS,
     kpi_card, section_header, progress_bar, outcome_badge,
     risk_badge, confidence_badge, decision_card,
     info_callout, muted_callout, page_header,
@@ -14,10 +24,6 @@ from app.styles import (
 
 
 def render_kpi_row(metrics: list[dict]):
-    """Render a row of compact KPI cards.
-
-    Each metric dict: {"label": str, "value": str, "sub": str, "accent": str}
-    """
     cols = st.columns(len(metrics))
     for col, m in zip(cols, metrics):
         with col:
@@ -31,10 +37,9 @@ def render_portfolio_table(
     df: pd.DataFrame,
     key: str = "portfolio_table",
 ):
-    """Render the main portfolio table with sorting and filtering."""
+    t = get_theme()
     st.markdown(section_header("Portfolio Ranking"), unsafe_allow_html=True)
 
-    # Filters row
     f1, f2, f3 = st.columns([2, 2, 1])
     with f1:
         industry_filter = st.multiselect(
@@ -71,7 +76,6 @@ def render_portfolio_table(
         mask = filtered["concept_name"].str.contains(search, case=False, na=False)
         filtered = filtered[mask]
 
-    # Build display dataframe
     display = filtered[[
         "portfolio_rank", "concept_name", "industry", "problem_area",
         "readiness_score", "confidence_score", "recommended_outcome",
@@ -98,30 +102,29 @@ def render_portfolio_table(
                 help="Commercialization readiness score (1-100)",
             ),
             "Confidence": st.column_config.NumberColumn(
-                format="%.0f%%", width="small",
+                format=".0%", width="small",
                 help="Model confidence based on data volume and certainty",
             ),
         },
     )
 
     st.markdown(
-        f'<div style="font-size:10px;color:#8b949e;margin-top:2px">'
+        f'<div style="font-size:{FONT_SM};color:{t["text_muted"]};margin-top:2px">'
         f'Showing {len(filtered)} of {len(df)} concepts</div>',
         unsafe_allow_html=True,
     )
 
 
 def render_concept_header(row: pd.Series):
-    """Render concept detail header section."""
+    t = get_theme()
     outcome = row["recommended_outcome"]
-    meta = OUTCOME_META.get(outcome, OUTCOME_META["Archive"])
 
     st.markdown(
         f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
-        f'<h3 style="margin:0;font-size:16px;font-weight:600">{row["concept_name"]}</h3>'
+        f'<h3 style="margin:0;font-size:{FONT_XL};font-weight:{WEIGHT_SEMIBOLD};color:{t["text_primary"]}">{row["concept_name"]}</h3>'
         f'{outcome_badge(outcome)}'
         f'</div>'
-        f'<div style="font-size:11px;color:#656d76;margin-bottom:12px">'
+        f'<div style="font-size:{FONT_MD};color:{t["text_secondary"]};margin-bottom:12px">'
         f'{row["industry"]} &middot; {row.get("problem_area", "")} &middot; Rank #{int(row["portfolio_rank"])}'
         f'</div>',
         unsafe_allow_html=True,
@@ -129,7 +132,6 @@ def render_concept_header(row: pd.Series):
 
 
 def render_concept_metrics(row: pd.Series):
-    """Render concept detail metrics row."""
     readiness = row["readiness_score"]
     confidence = row["confidence_score"]
     outcome = row["recommended_outcome"]
@@ -140,7 +142,6 @@ def render_concept_metrics(row: pd.Series):
         {"label": "Recommendation", "value": OUTCOME_META.get(outcome, {}).get("label", outcome), "sub": "ML outcome", "accent": "purple"},
     ])
 
-    # Readiness progress bar
     st.markdown(
         f'<div style="margin-top:2px;margin-bottom:12px">'
         f'{progress_bar(readiness, 4)}'
@@ -150,12 +151,10 @@ def render_concept_metrics(row: pd.Series):
 
 
 def render_decision_summary(row: pd.Series):
-    """Render executive decision summary: Decision, Evidence, Risks, Confidence, Next Step."""
     outcome = row["recommended_outcome"]
     evidence = row.get("key_evidence", "")
     confidence = row["confidence_score"]
 
-    # Next step based on outcome
     next_steps = {
         "MVP Build": "Allocate engineering resources. Build focused prototype for validation.",
         "Customer Pilot": "Identify 1-2 pilot customers. Define success metrics. Begin contracting.",
@@ -165,7 +164,6 @@ def render_decision_summary(row: pd.Series):
     }
     next_step = next_steps.get(outcome, "Gather more evidence before deciding.")
 
-    # Risk assessment
     fr = row.get("feasibility_risk", 0.5)
     if fr > 0.55:
         risk_text = "High delivery complexity"
@@ -185,7 +183,6 @@ def render_decision_summary(row: pd.Series):
 
 
 def render_evidence_bullets(evidence_str: str):
-    """Render evidence as compact bullet points."""
     if not evidence_str or evidence_str == "---":
         st.markdown(muted_callout("No evidence available."), unsafe_allow_html=True)
         return
@@ -199,13 +196,68 @@ def render_evidence_bullets(evidence_str: str):
 
 
 def render_narrative(narrative: str):
-    """Render AI narrative in a compact box."""
+    t = get_theme()
     if not narrative:
         st.markdown(muted_callout("No recommendation available."), unsafe_allow_html=True)
         return
     st.markdown(
-        f'<div style="background:#f6f8fa;border:1px solid #d1d9e0;border-left:3px solid #0969da;'
-        f'border-radius:0 6px 6px 0;padding:10px 12px;font-size:12px;color:#1f2328;line-height:1.6">'
+        f'<div style="background:{t["info_subtle"]};border:1px solid {t["info"]}40;border-left:3px solid {t["info"]};'
+        f'border-radius:0 6px 6px 0;padding:10px 12px;font-size:{FONT_MD};color:{t["text_primary"]};line-height:{LEADING_RELAXED}">'
         f'{narrative}</div>',
         unsafe_allow_html=True,
     )
+
+
+def render_shap_evidence_table(evidence: dict):
+    t = get_theme()
+    if not evidence:
+        st.markdown(muted_callout("No SHAP evidence available."), unsafe_allow_html=True)
+        return
+
+    supporting = evidence.get("supporting", [])
+    counter = evidence.get("counter", [])
+
+    if supporting:
+        st.markdown(
+            f'<div style="font-size:{FONT_SM};font-weight:{WEIGHT_SEMIBOLD};color:{t["success"]};text-transform:uppercase;'
+            f'letter-spacing:0.5px;margin-bottom:6px">Supporting Evidence</div>',
+            unsafe_allow_html=True,
+        )
+        rows = []
+        for s in supporting:
+            rows.append({
+                "Feature": s["label"],
+                "Value": s["description"],
+                "SHAP": f'{s["shap"]:+.4f}',
+                "Impact": s["magnitude"],
+            })
+        st.dataframe(
+            pd.DataFrame(rows),
+            use_container_width=True,
+            hide_index=True,
+            key="shap_supporting",
+        )
+
+    if counter:
+        st.markdown(
+            f'<div style="font-size:{FONT_SM};font-weight:{WEIGHT_SEMIBOLD};color:{t["danger"]};text-transform:uppercase;'
+            f'letter-spacing:0.5px;margin-bottom:6px;margin-top:10px">Counter Evidence</div>',
+            unsafe_allow_html=True,
+        )
+        rows = []
+        for c in counter:
+            rows.append({
+                "Feature": c["label"],
+                "Value": c["description"],
+                "SHAP": f'{c["shap"]:+.4f}',
+                "Impact": c["magnitude"],
+            })
+        st.dataframe(
+            pd.DataFrame(rows),
+            use_container_width=True,
+            hide_index=True,
+            key="shap_counter",
+        )
+
+    if not supporting and not counter:
+        st.markdown(muted_callout("No SHAP contributions found."), unsafe_allow_html=True)

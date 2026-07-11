@@ -1,5 +1,5 @@
 """
-Commercialization Intelligence Engine - Enterprise Dashboard
+Commercialization Intelligence Engine — Enterprise Dashboard
 
 Run: streamlit run app/streamlit_app.py
 """
@@ -15,7 +15,13 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from app.styles import inject_css, PAGE_CONFIG, PROCESSED_DIR
+from app.theme import (
+    get_theme, set_theme, toggle_theme, is_dark,
+    PROCESSED_DIR, PAGE_CONFIG,
+    FONT_SM, FONT_MD, FONT_LG,
+    WEIGHT_SEMIBOLD,
+)
+from app.styles import inject_css
 from app.components import muted_callout
 from models.decision_engine import run_decision_engine
 from models.insight_layer import build_insights
@@ -24,6 +30,10 @@ FEATURES_PATH = PROCESSED_DIR / "concept_features.csv"
 
 
 st.set_page_config(**PAGE_CONFIG)
+
+# Initialize theme
+if "theme_mode" not in st.session_state:
+    st.session_state["theme_mode"] = "dark"
 
 
 @st.cache_data(ttl=300, show_spinner="Running pipeline...")
@@ -36,25 +46,42 @@ def load_pipeline():
 
 
 def render_sidebar():
+    t = get_theme()
+
     with st.sidebar:
+        # --- Theme Toggle (single button) ---
+        icon = "☀️" if is_dark() else "🌙"
+        if st.button(icon, key="theme_toggle", help="Toggle theme"):
+            toggle_theme()
+            st.rerun()
+
+        st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
+
+        # --- Branding ---
         st.markdown(
-            '<div style="padding:4px 0">'
-            '<div style="font-size:13px;font-weight:600;color:#e6edf3">CIE</div>'
-            '<div style="font-size:10px;color:#8b949e">Commercialization Intelligence Engine</div>'
-            "</div>",
+            f'<div style="padding:4px 0">'
+            f'<div style="font-size:{FONT_MD};font-weight:{WEIGHT_SEMIBOLD};color:{t["text_primary"]}">CIE</div>'
+            f'<div style="font-size:{FONT_SM};color:{t["text_secondary"]}">Commercialization Intelligence Engine</div>'
+            f'</div>',
             unsafe_allow_html=True,
         )
-        st.markdown('<hr style="border-color:#30363d;margin:6px 0">', unsafe_allow_html=True)
+        st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
 
+        # --- Navigation ---
         page = st.radio(
             "Navigation",
             ["Overview", "Portfolio", "Explorer", "Analytics", "Model"],
             label_visibility="collapsed",
         )
 
-        st.markdown('<hr style="border-color:#30363d;margin:6px 0">', unsafe_allow_html=True)
+        st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
 
-        if st.button("Regenerate Data", key="sidebar_regen"):
+        # --- Actions ---
+        st.markdown(
+            f'<div style="font-size:{FONT_SM};color:{t["text_secondary"]};margin-bottom:4px">Actions</div>',
+            unsafe_allow_html=True,
+        )
+        if st.button("Regenerate Data", key="sidebar_regen", use_container_width=True):
             with st.spinner("Regenerating..."):
                 subprocess.run(
                     [sys.executable, str(ROOT / "data" / "generate_mock_data.py")],
@@ -67,10 +94,11 @@ def render_sidebar():
             st.cache_data.clear()
             st.rerun()
 
+        # --- Footer ---
         st.markdown(
-            '<div style="position:fixed;bottom:12px;left:12px;font-size:9px;color:#484f58">'
-            "v2.0 &middot; Python, scikit-learn, SHAP"
-            "</div>",
+            f'<div style="padding-top:20px;font-size:{FONT_SM};color:{t["text_muted"]};text-align:center">'
+            f'v2.0 &middot; Python, scikit-learn, SHAP'
+            f'</div>',
             unsafe_allow_html=True,
         )
 

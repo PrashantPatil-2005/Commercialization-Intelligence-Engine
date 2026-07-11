@@ -1,6 +1,8 @@
 """Explorer page - Executive Decision Report.
 
 Business question: "Why did this concept receive this recommendation?"
+
+Pipeline: RF Prediction → SHAP → Evidence Dict → LLM Summary → Dashboard
 """
 
 from __future__ import annotations
@@ -12,6 +14,7 @@ from app.styles import page_header, section_header, muted_callout, OUTCOME_META
 from app.components import (
     render_concept_header, render_concept_metrics,
     render_narrative, render_evidence_bullets, render_decision_summary,
+    render_shap_evidence_table,
 )
 from app.charts import plot_shap_waterfall
 from models.insight_layer import FEATURE_LABELS
@@ -32,7 +35,7 @@ def render(artifacts: dict, insights: pd.DataFrame):
     )
     row = ranked[ranked["concept_name"] == selected].iloc[0]
 
-    # Page Header with concept name
+    # Page Header
     st.markdown(page_header(
         f"Decision Report: {row['concept_name']}",
         f"{row['industry']} &middot; {row.get('problem_area', '')} &middot; Rank #{int(row['portfolio_rank'])}"
@@ -49,14 +52,22 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Two Column: Narrative + Evidence
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown(section_header("AI Analysis"), unsafe_allow_html=True)
-        render_narrative(row.get("ai_narrative", ""))
-    with c2:
-        st.markdown(section_header("Key Evidence"), unsafe_allow_html=True)
-        render_evidence_bullets(row.get("key_evidence", ""))
+    # LLM Summary (generated from SHAP evidence)
+    st.markdown(section_header("AI Analysis"), unsafe_allow_html=True)
+    render_narrative(row.get("ai_narrative", ""))
+
+    st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
+
+    # Structured SHAP Evidence
+    st.markdown(section_header("SHAP Evidence Breakdown"), unsafe_allow_html=True)
+    evidence = row.get("shap_evidence", None)
+    if isinstance(evidence, str):
+        import json
+        try:
+            evidence = json.loads(evidence)
+        except (json.JSONDecodeError, TypeError):
+            evidence = None
+    render_shap_evidence_table(evidence)
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
@@ -72,5 +83,8 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     # Raw Features
     with st.expander("Raw Feature Values", expanded=False):
-        feat_data = {f: round(float(row[f]), 4) for f in feature_names if f in row.index}
+        feat_data = {
+            FEATURE_LABELS.get(f, f): round(float(row[f]), 4)
+            for f in feature_names if f in row.index
+        }
         st.json(feat_data)

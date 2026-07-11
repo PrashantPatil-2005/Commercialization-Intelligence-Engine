@@ -14,7 +14,7 @@ Every page now answers ONE business question with a clear flow:
 |------|------------------|------|
 | Overview | "How healthy is the portfolio?" | KPIs → Charts → Table |
 | Portfolio | "Which concepts deserve investment?" | KPIs → Table → Breakdown |
-| Explorer | "Why did this concept get this recommendation?" | Header → Metrics → Decision → Evidence → SHAP |
+| Explorer | "Why did this concept get this recommendation?" | Header → Metrics → Decision → AI Analysis → SHAP Evidence → Waterfall |
 | Analytics | "What patterns exist across the portfolio?" | Performance → Behavior → Relationships → Industry |
 | Model | "How does the system reach decisions?" | Pipeline → Validation → Configuration → Importance |
 

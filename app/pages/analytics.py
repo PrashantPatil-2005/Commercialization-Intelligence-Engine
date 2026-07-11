@@ -1,7 +1,4 @@
-"""Analytics page - Pattern Analysis Dashboard.
-
-Business question: "What patterns exist across the portfolio?"
-"""
+"""Analytics page - Pattern Analysis Dashboard."""
 
 from __future__ import annotations
 
@@ -19,13 +16,11 @@ from models.insight_layer import FEATURE_LABELS
 def render(artifacts: dict, insights: pd.DataFrame):
     ranked = insights.sort_values("portfolio_rank")
 
-    # Page Header
     st.markdown(page_header(
         "Portfolio Analytics",
         "Patterns, clusters, and feature relationships across concepts"
     ), unsafe_allow_html=True)
 
-    # Section 1: Portfolio Performance
     st.markdown(section_header("Portfolio Performance"), unsafe_allow_html=True)
     c1, c2 = st.columns([3, 2])
     with c1:
@@ -35,7 +30,6 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 2: Customer Behavior
     st.markdown(section_header("Customer Behavior Patterns"), unsafe_allow_html=True)
     c3, c4 = st.columns(2)
     with c3:
@@ -45,7 +39,6 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 3: Feature Relationships
     st.markdown(section_header("Feature Relationships"), unsafe_allow_html=True)
     numeric_features = [
         "demand_intensity", "engagement_depth_norm", "feasibility_risk",
@@ -60,7 +53,6 @@ def render(artifacts: dict, insights: pd.DataFrame):
 
     st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
 
-    # Section 4: Industry Breakdown
     st.markdown(section_header("Industry Breakdown"), unsafe_allow_html=True)
     industry_stats = (
         ranked.groupby("industry")
@@ -80,4 +72,8 @@ def render(artifacts: dict, insights: pd.DataFrame):
         }),
         use_container_width=True,
         hide_index=True,
+        column_config={
+            "Avg Readiness": st.column_config.NumberColumn(format="%.1f"),
+            "Avg Confidence": st.column_config.NumberColumn(format=".0%"),
+        },
     )

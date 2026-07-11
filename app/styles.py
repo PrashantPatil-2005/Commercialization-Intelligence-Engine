@@ -1,410 +1,522 @@
-"""Enterprise-grade CSS for the Commercialization Intelligence Engine."""
+"""
+Dynamic Theme CSS — Generated from active theme.
 
-from pathlib import Path
+Call inject_css() on every page render. CSS is generated from the
+active theme dict, so light/dark switching is instant.
+"""
 
-ROOT = Path(__file__).resolve().parent.parent
-PROCESSED_DIR = ROOT / "data" / "processed"
+import html as html_mod
 
-PAGE_CONFIG = {
-    "page_title": "CIE - Commercialization Intelligence Engine",
-    "page_icon": None,
-    "layout": "wide",
-    "initial_sidebar_state": "expanded",
-}
+from app.theme import (
+    get_theme, OUTCOME_META,
+    FONT_FAMILY,
+    FONT_XS, FONT_SM, FONT_BASE, FONT_MD, FONT_LG, FONT_XL, FONT_2XL, FONT_3XL,
+    WEIGHT_REGULAR, WEIGHT_MEDIUM, WEIGHT_SEMIBOLD, WEIGHT_BOLD,
+    LEADING_TIGHT, LEADING_NORMAL, LEADING_RELAXED,
+    RADIUS_MD,
+)
 
-# Outcome metadata: color, label
-OUTCOME_META = {
-    "MVP Build":       {"color": "#0e9f6e", "label": "MVP Build"},
-    "Customer Pilot":  {"color": "#1f6feb", "label": "Customer Pilot"},
-    "Reusable Asset":  {"color": "#8957e5", "label": "Reusable Asset"},
-    "Incubate":        {"color": "#bf8700", "label": "Incubate"},
-    "Archive":         {"color": "#cf222e", "label": "Archive"},
-}
 
-CLUSTER_COLORS = ["#1f6feb", "#0e9f6e", "#bf8700", "#cf222e", "#8957e5", "#e16f24"]
-
-EnterpriseCSS = """
+def _css(t: dict) -> str:
+    """Generate the full CSS string from a theme dict."""
+    return f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-:root {
-    --bg: #f6f8fa;
-    --surface: #ffffff;
-    --surface-alt: #f6f8fa;
-    --border: #d1d9e0;
-    --border-light: #e8ecf0;
-    --text: #1f2328;
-    --text-secondary: #656d76;
-    --text-tertiary: #8b949e;
-    --blue: #0969da;
-    --blue-subtle: #ddf4ff;
-    --green: #0e9f6e;
-    --green-subtle: #dafbe1;
-    --red: #cf222e;
-    --red-subtle: #ffebe9;
-    --orange: #bf8700;
-    --orange-subtle: #fff8c5;
-    --purple: #8957e5;
-    --purple-subtle: #fbefff;
-    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --mono: 'SFMono-Regular', 'Consolas', 'Liberation Mono', monospace;
-}
+/* ============================================================
+   ROOT VARIABLES
+   ============================================================ */
+:root {{
+    --bg: {t["bg_primary"]};
+    --bg-s: {t["bg_secondary"]};
+    --bg-t: {t["bg_tertiary"]};
+    --bg-sidebar: {t["sidebar_bg"]};
+    --bg-input: {t["bg_input"]};
+    --border: {t["border"]};
+    --border-l: {t["border_light"]};
+    --border-f: {t["border_focus"]};
+    --tx: {t["text_primary"]};
+    --tx2: {t["text_secondary"]};
+    --txm: {t["text_muted"]};
+    --txl: {t["text_link"]};
+    --ok: {t["success"]};
+    --ok-bg: {t["success_subtle"]};
+    --warn: {t["warning"]};
+    --warn-bg: {t["warning_subtle"]};
+    --err: {t["danger"]};
+    --err-bg: {t["danger_subtle"]};
+    --info: {t["info"]};
+    --info-bg: {t["info_subtle"]};
+    --font: {FONT_FAMILY};
+    --r: {RADIUS_MD};
+}}
 
-html, body, [class*="css"] {
+/* ============================================================
+   BASE
+   ============================================================ */
+.stApp {{ background: var(--bg) !important; }}
+.stApp > header {{ background: transparent !important; }}
+html, body, [class*="css"] {{
     font-family: var(--font);
-    color: var(--text);
-    font-size: 13px;
-    line-height: 1.5;
-}
+    color: var(--tx);
+    font-size: {FONT_LG};
+    line-height: {LEADING_NORMAL};
+}}
+.block-container {{ background: var(--bg) !important; }}
 
-/* Streamlit Overrides */
-.stDeployButton { display: none; }
+/* ============================================================
+   STREAMLIT OVERRIDES
+   ============================================================ */
+.stDeployButton {{ display: none; }}
+#MainMenu, footer {{ display: none !important; }}
+header[data-testid="stHeader"] {{ background: transparent !important; }}
+header[data-testid="stHeader"] * {{ visibility: visible !important; }}
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background: #1b1f24;
-    border-right: 1px solid #30363d;
-}
-section[data-testid="stSidebar"] * {
-    color: #c9d1d9 !important;
-}
-section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
-    color: #8b949e !important;
-    font-size: 11px;
-}
-section[data-testid="stSidebar"] .stButton > button {
-    background: #21262d;
-    color: #c9d1d9 !important;
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 4px 10px;
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+section[data-testid="stSidebar"] {{
+    background: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border) !important;
+}}
+section[data-testid="stSidebar"] p {{
+    color: var(--tx2) !important;
+}}
+section[data-testid="stSidebar"] label {{
+    color: var(--tx2) !important;
+}}
+section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {{
+    color: var(--tx2) !important;
+    font-size: {FONT_BASE};
+}}
+section[data-testid="stSidebar"] .stButton > button {{
+    background: var(--bg-t) !important;
+    color: var(--tx) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--r);
+    font-size: {FONT_BASE};
+    font-weight: {WEIGHT_MEDIUM};
+    padding: 6px 12px;
     width: 100%;
+    transition: background 0.15s, border-color 0.15s;
+}}
+section[data-testid="stSidebar"] .stButton > button:hover {{
+    background: var(--border) !important;
+    border-color: var(--txm) !important;
+}}
+section[data-testid="stSidebar"] hr {{
+    border-color: var(--border) !important;
+    margin: 8px 0;
+}}
+section[data-testid="stSidebar"] .stRadio > div {{ gap: 2px; }}
+section[data-testid="stSidebar"] .stRadio > div > label {{
+    padding: 6px 10px;
+    border-radius: var(--r);
+    font-size: {FONT_MD};
     transition: background 0.15s;
-}
-section[data-testid="stSidebar"] .stButton > button:hover {
-    background: #30363d;
-    border-color: #484f58;
-}
-section[data-testid="stSidebar"] hr {
-    border-color: #30363d !important;
-    margin: 6px 0;
-}
-section[data-testid="stSidebar"] .stRadio > div {
-    gap: 2px;
-}
-section[data-testid="stSidebar"] .stRadio > div > label {
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    transition: background 0.15s;
-}
-section[data-testid="stSidebar"] .stRadio > div > label:hover {
-    background: #21262d;
-}
-section[data-testid="stSidebar"] .stRadio > div > label[data-checked="true"] {
-    background: #1f6feb22;
-    color: #58a6ff !important;
-}
+}}
+section[data-testid="stSidebar"] .stRadio > div > label:hover {{
+    background: var(--bg-t) !important;
+}}
+section[data-testid="stSidebar"] .stRadio > div > label[data-checked="true"] {{
+    background: {t["sidebar_active_bg"]} !important;
+    color: {t["sidebar_active_text"]} !important;
+}}
 
-/* Page Header */
-.page-header {
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+.page-header {{
     margin-bottom: 16px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
-}
-.page-header h2 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text);
+}}
+.page-header h2 {{
+    font-size: {FONT_2XL};
+    font-weight: {WEIGHT_SEMIBOLD};
+    color: var(--tx);
     margin: 0 0 4px 0;
-}
-.page-header p {
-    font-size: 12px;
-    color: var(--text-secondary);
+}}
+.page-header p {{
+    font-size: {FONT_MD};
+    color: var(--tx2);
     margin: 0;
-}
+}}
 
-/* KPI Cards */
-.kpi-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-.kpi-card {
+/* ============================================================
+   KPI CARDS
+   ============================================================ */
+.kpi-row {{ display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }}
+.kpi-card {{ flex: 1 1 150px; min-width: 150px; }}
+.kpi-card {{
     flex: 1;
-    background: var(--surface);
+    background: var(--bg-s);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
+    border-radius: var(--r);
+    padding: 12px 14px;
     min-width: 0;
-}
-.kpi-card .kpi-label {
-    font-size: 10px;
-    font-weight: 600;
+    transition: border-color 0.15s;
+}}
+.kpi-card:hover {{ border-color: var(--txm); }}
+.kpi-card .kpi-label {{
+    font-size: {FONT_SM};
+    font-weight: {WEIGHT_SEMIBOLD};
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--text-tertiary);
-    margin-bottom: 2px;
-}
-.kpi-card .kpi-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
-}
-.kpi-card .kpi-sub {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    margin-top: 1px;
-}
-.kpi-card.accent-blue { border-left: 3px solid var(--blue); }
-.kpi-card.accent-green { border-left: 3px solid var(--green); }
-.kpi-card.accent-purple { border-left: 3px solid var(--purple); }
-.kpi-card.accent-orange { border-left: 3px solid var(--orange); }
-.kpi-card.accent-red { border-left: 3px solid var(--red); }
+    color: var(--tx2);
+    margin-bottom: 4px;
+}}
+.kpi-card .kpi-value {{
+    font-size: {FONT_3XL};
+    font-weight: {WEIGHT_BOLD};
+    color: var(--tx);
+    line-height: {LEADING_TIGHT};
+}}
+.kpi-card .kpi-sub {{
+    font-size: {FONT_SM};
+    color: var(--txm);
+    margin-top: 2px;
+}}
+.kpi-card.accent-blue {{ border-left: 3px solid {t["info"]}; }}
+.kpi-card.accent-green {{ border-left: 3px solid {t["success"]}; }}
+.kpi-card.accent-purple {{ border-left: 3px solid {OUTCOME_META["Reusable Asset"]["color"]}; }}
+.kpi-card.accent-orange {{ border-left: 3px solid {t["warning"]}; }}
+.kpi-card.accent-red {{ border-left: 3px solid {t["danger"]}; }}
 
-/* Section Headers */
-.section-header {
-    font-size: 11px;
-    font-weight: 600;
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-header {{
+    font-size: {FONT_SM};
+    font-weight: {WEIGHT_SEMIBOLD};
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--text-secondary);
-    padding-bottom: 4px;
+    color: var(--tx2);
+    padding-bottom: 6px;
     border-bottom: 1px solid var(--border);
-    margin: 16px 0 8px 0;
-}
+    margin: 20px 0 10px 0;
+}}
 
-/* Badges */
-.badge {
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge {{
     display: inline-block;
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 600;
-    line-height: 1.6;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: {FONT_SM};
+    font-weight: {WEIGHT_SEMIBOLD};
+    line-height: {LEADING_NORMAL};
     white-space: nowrap;
-}
+}}
 
-/* Callouts */
-.callout {
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    line-height: 1.5;
+/* ============================================================
+   CALLOUTS
+   ============================================================ */
+.callout {{
+    padding: 8px 12px;
+    border-radius: var(--r);
+    font-size: {FONT_MD};
+    line-height: {LEADING_NORMAL};
     margin-bottom: 8px;
     border: 1px solid;
-}
-.callout-info {
-    background: var(--blue-subtle);
-    border-color: #54aeff;
-    color: #0969da;
-}
-.callout-warn {
-    background: var(--orange-subtle);
-    border-color: #d4a72c;
-    color: #9a6700;
-}
-.callout-muted {
-    background: var(--surface-alt);
-    border-color: var(--border);
-    color: var(--text-secondary);
-}
+}}
+.callout-info {{
+    background: {t["callout_info_bg"]};
+    border-color: {t["callout_info_border"]}40;
+    color: {t["info"]};
+}}
+.callout-warn {{
+    background: {t["callout_warn_bg"]};
+    border-color: {t["callout_warn_border"]}40;
+    color: {t["warning"]};
+}}
+.callout-muted {{
+    background: {t["callout_muted_bg"]};
+    border-color: {t["callout_muted_border"]};
+    color: var(--tx2);
+}}
 
-/* Decision Card */
-.decision-card {
-    background: var(--surface);
+/* ============================================================
+   DECISION CARD
+   ============================================================ */
+.decision-card {{
+    background: var(--bg-s);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--r);
     padding: 12px 14px;
     margin-bottom: 8px;
-}
-.decision-card .dc-label {
-    font-size: 10px;
-    font-weight: 600;
+    transition: border-color 0.15s;
+}}
+.decision-card:hover {{ border-color: var(--txm); }}
+.decision-card .dc-label {{
+    font-size: {FONT_SM};
+    font-weight: {WEIGHT_SEMIBOLD};
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--text-tertiary);
+    color: var(--tx2);
     margin-bottom: 4px;
-}
-.decision-card .dc-value {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.6;
-}
+}}
+.decision-card .dc-value {{
+    font-size: {FONT_LG};
+    color: var(--tx);
+    line-height: {LEADING_RELAXED};
+}}
 
-/* Evidence List */
-.evidence-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-.evidence-list li {
-    font-size: 12px;
-    color: var(--text-secondary);
-    padding: 3px 0;
-    border-bottom: 1px solid var(--border-light);
-    line-height: 1.5;
-}
-.evidence-list li:last-child {
-    border-bottom: none;
-}
+/* ============================================================
+   EVIDENCE LIST
+   ============================================================ */
+.evidence-list {{ list-style: none; margin: 0; padding: 0; }}
+.evidence-list li {{
+    font-size: {FONT_MD};
+    color: var(--tx2);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border-l);
+    line-height: {LEADING_NORMAL};
+}}
+.evidence-list li:last-child {{ border-bottom: none; }}
 
-/* Progress Bar */
-.progress-track {
-    background: #e8ecf0;
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-track {{
+    background: var(--bg-t);
     border-radius: 3px;
     height: 5px;
     overflow: hidden;
-}
-.progress-fill {
-    height: 100%;
-    border-radius: 3px;
-}
+}}
+.progress-fill {{ height: 100%; border-radius: 3px; }}
 
-/* Container */
-.section-container {
-    background: var(--surface);
+/* ============================================================
+   SECTION CONTAINER
+   ============================================================ */
+.section-container {{
+    background: var(--bg-s);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 14px;
+    border-radius: var(--r);
+    padding: 14px 16px;
     margin-bottom: 12px;
-}
+}}
 
-/* Divider */
-hr.section-divider {
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+hr.section-divider {{
     border: none;
     border-top: 1px solid var(--border);
-    margin: 8px 0;
-}
+    margin: 10px 0;
+}}
 
-/* Tabs */
-.stTabs [data-baseweb="tab-list"] {
+/* ============================================================
+   TABS
+   ============================================================ */
+.stTabs [data-baseweb="tab-list"] {{
     gap: 0;
     background: transparent;
     border-bottom: 1px solid var(--border);
     padding: 0;
-}
-.stTabs [data-baseweb="tab"] {
-    font-size: 12px;
-    font-weight: 500;
+}}
+.stTabs [data-baseweb="tab"] {{
+    font-size: {FONT_MD};
+    font-weight: {WEIGHT_MEDIUM};
     padding: 6px 14px;
     border: none;
     border-bottom: 2px solid transparent;
     background: transparent !important;
-    color: var(--text-secondary) !important;
+    color: var(--tx2) !important;
     border-radius: 0;
-}
-.stTabs [aria-selected="true"] {
-    color: var(--text) !important;
-    border-bottom-color: #0969da !important;
+}}
+.stTabs [aria-selected="true"] {{
+    color: var(--tx) !important;
+    border-bottom-color: var(--info) !important;
     background: transparent !important;
     box-shadow: none !important;
-}
-.stTabs [data-baseweb="tab-highlight"] { display: none; }
-.stTabs [data-baseweb="tab-border"] { display: none; }
+}}
+.stTabs [data-baseweb="tab-highlight"] {{ display: none; }}
+.stTabs [data-baseweb="tab-border"] {{ display: none; }}
 
-/* Expander */
-.stExpander {
+/* ============================================================
+   EXPANDER
+   ============================================================ */
+.stExpander {{
     border: 1px solid var(--border);
-    border-radius: 6px;
-}
+    border-radius: var(--r);
+    background: var(--bg-s);
+}}
+.stExpander summary {{ color: var(--tx) !important; }}
 
-/* Selectbox */
-.stSelectbox > div > div {
-    border-radius: 6px;
+/* ============================================================
+   SELECTBOX / INPUTS
+   ============================================================ */
+.stSelectbox > div > div {{
+    border-radius: var(--r);
     border-color: var(--border);
-    font-size: 12px;
-}
+    font-size: {FONT_MD};
+    background: var(--bg-input) !important;
+    color: var(--tx) !important;
+}}
+.stMultiSelect > div > div {{
+    border-radius: var(--r);
+    border-color: var(--border);
+    background: var(--bg-input) !important;
+}}
 
-/* Charts */
-.stPlotlyChart, .stPyplotFigure {
-    border: 1px solid var(--border-light);
-    border-radius: 6px;
-    padding: 2px;
-}
+/* ============================================================
+   DATAFRAME / TABLE
+   ============================================================ */
+.stDataFrame {{
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+}}
+[data-testid="stDataFrame"] table {{
+    background: var(--bg) !important;
+}}
+[data-testid="stDataFrame"] th {{
+    background: {t["table_header_bg"]} !important;
+    color: var(--tx2) !important;
+    border-bottom: 1px solid var(--border) !important;
+    font-size: {FONT_SM} !important;
+    font-weight: {WEIGHT_SEMIBOLD} !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}}
+[data-testid="stDataFrame"] td {{
+    background: var(--bg) !important;
+    color: var(--tx) !important;
+    border-bottom: 1px solid var(--border-l) !important;
+    font-size: {FONT_MD} !important;
+}}
+[data-testid="stDataFrame"] tr:hover td {{
+    background: {t["table_row_hover"]} !important;
+}}
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d1d9e0; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #afb8c1; }
+/* ============================================================
+   CHARTS
+   ============================================================ */
+.stPlotlyChart, .stPyplotFigure {{
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 4px;
+    background: var(--bg-s);
+}}
 
-/* Remove Streamlit branding */
-#MainMenu, footer, header[data-testid="stHeader"] { display: none !important; }
-.stFooter { display: none !important; }
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {{ width: 6px; height: 6px; }}
+::-webkit-scrollbar-track {{ background: transparent; }}
+::-webkit-scrollbar-thumb {{ background: {t["scrollbar"]}; border-radius: 3px; }}
+::-webkit-scrollbar-thumb:hover {{ background: {t["scrollbar_hover"]}; }}
+
+/* ============================================================
+    FOCUS VISIBLE
+    ============================================================ */
+.stButton > button:focus-visible,
+.stSelectbox:focus-visible,
+.stRadio label:focus-visible,
+.stMultiSelect:focus-visible {{
+    outline: 2px solid var(--border-f);
+    outline-offset: 2px;
+}}
+
+/* ============================================================
+    TOOLTIP
+   ============================================================ */
+[data-testid="stTooltip"] {{
+    background: var(--bg-t) !important;
+    color: var(--tx) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--r) !important;
+    font-size: {FONT_BASE} !important;
+}}
+
+/* ============================================================
+   JSON / CODE
+   ============================================================ */
+.stJson, .stCode {{
+    background: var(--bg-s) !important;
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+}}
 </style>
 """
 
 
 def inject_css():
-    """Inject enterprise CSS into the Streamlit page."""
+    """Inject theme-aware CSS into the Streamlit page."""
     import streamlit as st
-    st.markdown(EnterpriseCSS, unsafe_allow_html=True)
+    t = get_theme()
+    st.markdown(_css(t), unsafe_allow_html=True)
 
+
+# ============================================================
+# HTML HELPER FUNCTIONS
+# ============================================================
 
 def page_header(title: str, subtitle: str = "") -> str:
-    """Return HTML for a page header."""
-    sub_html = f'<p>{subtitle}</p>' if subtitle else ""
-    return f'<div class="page-header"><h2>{title}</h2>{sub_html}</div>'
+    t = get_theme()
+    safe_title = html_mod.escape(title)
+    safe_sub = html_mod.escape(subtitle) if subtitle else ""
+    sub_html = f'<p>{safe_sub}</p>' if safe_sub else ""
+    return f'<div class="page-header"><h2>{safe_title}</h2>{sub_html}</div>'
 
 
 def section_header(text: str) -> str:
-    """Return HTML for a section header."""
-    return f'<div class="section-header">{text}</div>'
+    return f'<div class="section-header">{html_mod.escape(text)}</div>'
 
 
 def kpi_card(label: str, value: str, sub: str = "", accent: str = "") -> str:
-    """Return HTML for a compact KPI card."""
     cls = f"kpi-card accent-{accent}" if accent else "kpi-card"
-    sub_html = f'<div class="kpi-sub">{sub}</div>' if sub else ""
-    return f'<div class="{cls}"><div class="kpi-label">{label}</div><div class="kpi-value">{value}</div>{sub_html}</div>'
+    sub_html = f'<div class="kpi-sub">{html_mod.escape(sub)}</div>' if sub else ""
+    return f'<div class="{cls}" role="region" aria-label="{html_mod.escape(label)}"><div class="kpi-label">{html_mod.escape(label)}</div><div class="kpi-value">{html_mod.escape(value)}</div>{sub_html}</div>'
 
 
 def progress_bar(score: float, height: int = 5) -> str:
-    """Return HTML for a minimal progress bar."""
-    if score >= 60:
-        color = "#0e9f6e"
+    t = get_theme()
+    score = max(0.0, min(100.0, score))
+    if score >= 55:
+        color = t["progress_high"]
     elif score >= 45:
-        color = "#bf8700"
+        color = t["progress_moderate"]
     else:
-        color = "#cf222e"
-    return f'<div class="progress-track" style="height:{height}px"><div class="progress-fill" style="width:{score}%;background:{color}"></div></div>'
+        color = t["progress_low"]
+    return (
+        f'<div class="progress-track" style="height:{height}px" '
+        f'role="progressbar" aria-valuenow="{score:.0f}" aria-valuemin="0" aria-valuemax="100">'
+        f'<div class="progress-fill" style="width:{score}%;background:{color}"></div></div>'
+    )
 
 
 def outcome_badge(outcome: str) -> str:
-    """Return HTML badge for an outcome."""
     meta = OUTCOME_META.get(outcome, OUTCOME_META["Archive"])
     color = meta["color"]
-    return f'<span class="badge" style="background:{color}15;color:{color};border:1px solid {color}30">{meta["label"]}</span>'
+    return f'<span class="badge" style="background:{color}18;color:{color};border:1px solid {color}30">{meta["label"]}</span>'
 
 
 def risk_badge(level: str) -> str:
-    """Return HTML badge for risk level."""
+    t = get_theme()
     colors = {
-        "High": ("#cf222e", "#ffebe9"),
-        "Moderate": ("#bf8700", "#fff8c5"),
-        "Low": ("#0e9f6e", "#dafbe1"),
+        "High":     (t["danger"],  t["danger_subtle"]),
+        "Moderate": (t["warning"], t["warning_subtle"]),
+        "Low":      (t["success"], t["success_subtle"]),
     }
-    color, bg = colors.get(level, ("#8b949e", "#f6f8fa"))
+    color, bg = colors.get(level, (t["text_secondary"], t["bg_secondary"]))
     return f'<span class="badge" style="background:{bg};color:{color};border:1px solid {color}30">{level} Risk</span>'
 
 
 def confidence_badge(confidence: float) -> str:
-    """Return HTML badge for confidence level."""
+    t = get_theme()
     if confidence >= 0.80:
-        return risk_badge("Low").replace("Risk", "Confidence")
+        return f'<span class="badge" style="background:{t["success_subtle"]};color:{t["success"]};border:1px solid {t["success"]}30">High Confidence</span>'
     elif confidence >= 0.65:
-        return f'<span class="badge" style="background:#fff8c5;color:#9a6700;border:1px solid #9a670030">Moderate Confidence</span>'
+        return f'<span class="badge" style="background:{t["warning_subtle"]};color:{t["warning"]};border:1px solid {t["warning"]}30">Moderate Confidence</span>'
     else:
-        return f'<span class="badge" style="background:#ffebe9;color:#cf222e;border:1px solid #cf222e30">Low Confidence</span>'
+        return f'<span class="badge" style="background:{t["danger_subtle"]};color:{t["danger"]};border:1px solid {t["danger"]}30">Low Confidence</span>'
 
 
 def decision_card(label: str, value: str) -> str:
-    """Return HTML for a decision summary card."""
-    return f'<div class="decision-card"><div class="dc-label">{label}</div><div class="dc-value">{value}</div></div>'
+    return f'<div class="decision-card"><div class="dc-label">{html_mod.escape(label)}</div><div class="dc-value">{value}</div></div>'
 
 
 def info_callout(text: str) -> str:
