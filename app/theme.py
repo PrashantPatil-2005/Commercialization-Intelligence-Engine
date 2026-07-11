@@ -287,7 +287,7 @@ BADGE_RADIUS = "10px"
 
 PAGE_CONFIG = {
     "page_title": "CIE - Commercialization Intelligence Engine",
-    "page_icon": "📊",
+    "page_icon": None,
     "layout": "wide",
     "initial_sidebar_state": "expanded",
 }
