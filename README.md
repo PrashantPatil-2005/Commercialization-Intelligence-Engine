@@ -142,25 +142,7 @@ Each concept has a hidden `_latent_commercial_potential` (Beta(2,2)) that drives
 
 ---
 
-## Limitations
 
-| Limitation | Impact | Path Forward |
-|------------|--------|-------------|
-| Synthetic data | Results don't validate business value | Architecture transfers to real data |
-| Circular labels | RF trained on rules from same features | Needs human annotations |
-| 12 concepts | Too few for robust ML | Production needs 50+ |
-| Keyword sentiment | Not transformer embeddings | Sufficient for prototype |
-
----
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [README.md](README.md) | Project overview and quickstart |
-| [TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md) | Full technical documentation (architecture, algorithms, data flow) |
-| [PPT_SPEAKING_GUIDE.md](docs/PPT_SPEAKING_GUIDE.md) | Slide-by-slide presentation scripts |
-| [CIE_Presentation.pptx](docs/CIE_Presentation.pptx) | Interview presentation (7 slides) |
 
 ---
 
