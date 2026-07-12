@@ -122,8 +122,8 @@ Pre-computed outputs exist in `data/processed/`, so the dashboard works without 
 │   └── commercialization_results.ipynb
 │
 ├── docs/
-│   ├── PPT_SPEAKING_GUIDE.md       # Slide-by-slide presentation scripts
-│   └── CIE_Presentation.pptx       # Interview presentation (7 slides)
+│   ├── techinical_documentation.md       # tech documentataion
+│ 
 │
 ├── TECHNICAL_DOCUMENTATION.md      # Full technical documentation
 ├── README.md                       # This file
