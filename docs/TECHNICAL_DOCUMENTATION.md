@@ -701,5 +701,4 @@ ipykernel>=6.25.0
 
 ---
 
-*Document prepared for NTT DATA Internship Case Study submission.*
-*Author: Prashant Patil — prashanthpatil02@gmail.com*
+*Prashant Patil — prashanthpatil02@gmail.com*
