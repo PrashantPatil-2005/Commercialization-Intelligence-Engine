@@ -124,19 +124,19 @@ def main():
     page = render_sidebar()
 
     if page == "Overview":
-        from app.pages.overview import render
+        from app._pages.overview import render
         render(report, artifacts, insights)
     elif page == "Portfolio":
-        from app.pages.portfolio import render
+        from app._pages.portfolio import render
         render(report, artifacts, insights)
     elif page == "Explorer":
-        from app.pages.explorer import render
+        from app._pages.explorer import render
         render(artifacts, insights)
     elif page == "Analytics":
-        from app.pages.analytics import render
+        from app._pages.analytics import render
         render(artifacts, insights)
     elif page == "Model":
-        from app.pages.model import render
+        from app._pages.model import render
         render()
 
 
