@@ -1,7 +1,8 @@
 """
-Commercialization Intelligence Engine — Enterprise Dashboard
+Commercialization Intelligence Engine — Streamlit App Entry Point
 
 Run: streamlit run app/streamlit_app.py
+Deploy: https://share.streamlit.io
 """
 
 from __future__ import annotations
@@ -28,10 +29,8 @@ from models.insight_layer import build_insights
 
 FEATURES_PATH = PROCESSED_DIR / "concept_features.csv"
 
-
 st.set_page_config(**PAGE_CONFIG)
 
-# Initialize theme
 if "theme_mode" not in st.session_state:
     st.session_state["theme_mode"] = "dark"
 
@@ -49,7 +48,6 @@ def render_sidebar():
     t = get_theme()
 
     with st.sidebar:
-        # --- Logo + Branding ---
         st.markdown(
             f'<div style="padding:0 0 4px 0">'
             f'<div style="font-size:{FONT_LG};font-weight:{WEIGHT_BOLD};color:{t["text_primary"]};letter-spacing:0.02em">CIE</div>'
@@ -58,15 +56,13 @@ def render_sidebar():
             unsafe_allow_html=True,
         )
 
-        # --- Theme Toggle (single button) ---
-        icon = "☀️" if is_dark() else "🌙"
+        icon = "\u2600\ufe0f" if is_dark() else "\U0001f319"
         if st.button(icon, key="theme_toggle", help="Toggle theme"):
             toggle_theme()
             st.rerun()
 
         st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
 
-        # --- Navigation ---
         page = st.radio(
             "Navigation",
             ["Overview", "Portfolio", "Explorer", "Analytics", "Model"],
@@ -75,7 +71,6 @@ def render_sidebar():
 
         st.markdown(f'<hr style="border-color:{t["border"]};margin:8px 0">', unsafe_allow_html=True)
 
-        # --- Actions ---
         st.markdown(
             f'<div style="font-size:{FONT_SM};color:{t["text_secondary"]};margin-bottom:4px">Actions</div>',
             unsafe_allow_html=True,
@@ -93,7 +88,6 @@ def render_sidebar():
             st.cache_data.clear()
             st.rerun()
 
-        # --- Footer ---
         st.markdown(
             f'<div class="sidebar-footer">'
             f'<div class="sidebar-footer-row">'
