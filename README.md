@@ -78,6 +78,10 @@ pip install -r requirements.txt
 # Run dashboard
 streamlit run app/streamlit_app.py
 
+python --version
+python -m pip show streamlit
+python -m streamlit run app/streamlit_app.py
+
 # Or run notebook
 jupyter notebook notebooks/commercialization_results.ipynb
 
